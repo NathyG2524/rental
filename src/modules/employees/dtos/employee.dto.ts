@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsDateString, IsEmail, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsDateString,
+  IsEmail,
+  IsObject,
+  IsString,
+} from 'class-validator';
 
 export class CreateEmployeeDto {
   @ApiProperty()
@@ -31,6 +37,16 @@ export class UpdateAccountPermissionDto {
   @ApiProperty()
   @IsArray()
   permissions: string[];
+}
+
+export class UpdateEmployeeDetailDto {
+  @ApiProperty()
+  @IsEmail()
+  employeeId: string;
+
+  @ApiProperty()
+  @IsObject()
+  details: any;
 }
 
 export class LoginDto {

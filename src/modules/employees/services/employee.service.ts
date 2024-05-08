@@ -8,6 +8,7 @@ import {
   LoginDto,
   LoginResponseDto,
   UpdateAccountPermissionDto,
+  UpdateEmployeeDetailDto,
 } from '../dtos/employee.dto';
 import { randomInt } from 'crypto';
 import { REQUEST } from '@nestjs/core';
@@ -61,6 +62,19 @@ export class EmployeeService extends EntityCrudService<Employee> {
     await manager.getRepository(EmployeeAccount).update(account.id, {
       permissions: input.permissions,
     });
+  }
+
+  async updateEmployeeDetail(input: UpdateEmployeeDetailDto) {
+    const item = await this.findOneOrFail(input.employeeId);
+
+    await this.repositoryEmployee.update(item.id, {
+      details: input.details,
+    });
+
+    return {
+      ...item,
+      ...input,
+    };
   }
 
   async login(input: LoginDto) {

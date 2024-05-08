@@ -6,3 +6,6 @@ export * from './department.entity';
 export * from './project.entity';
 export * from './social-media.entity';
 export * from './leave-type.entity';
+export * from './vendor.entity';
+export * from './employee-leave-allocation.entity';
+export * from './employee-leave-request.entity';

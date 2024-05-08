@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsObject, IsString } from 'class-validator';
 
-export class CreateClientDto {
+export class CreateVendorDto {
   @ApiProperty()
   @IsString()
   name: string;
+
+  @ApiProperty()
+  @IsString()
+  tin: string;
 
   @ApiProperty()
   @IsString()
@@ -19,7 +23,7 @@ export class CreateClientDto {
   createdById: string;
 }
 
-export class UpdateClientAdditionalInfoDto {
+export class UpdateVendorAdditionalInfoDto {
   @ApiProperty()
   @IsObject()
   additionalInfo: any;

@@ -9,6 +9,7 @@ import { DepartmentModule } from './modules/departments/department.module';
 import { ProjectModule } from './modules/projects/project.module';
 import { SocialMediaModule } from './modules/social-medias/social-media.module';
 import { LeaveTypeModule } from './modules/leave-types/leave-type.module';
+import { VendorModule } from './modules/vendors/vendor.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { LeaveTypeModule } from './modules/leave-types/leave-type.module';
     ProjectModule,
     SocialMediaModule,
     LeaveTypeModule,
+    VendorModule,
   ],
   controllers: [],
   providers: [

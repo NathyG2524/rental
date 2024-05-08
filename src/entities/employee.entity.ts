@@ -13,6 +13,7 @@ import { Client } from './client.entity';
 import { Department } from './department.entity';
 import { EmployeeAccount } from './employee-account.entity';
 import { SocialMedia } from './social-media.entity';
+import { Vendor } from './vendor.entity';
 
 @Entity({ name: 'employees' })
 export class Employee extends BaseEntity {
@@ -33,6 +34,9 @@ export class Employee extends BaseEntity {
 
   @Column()
   startDate: Date;
+
+  @Column({ type: 'jsonb', nullable: true })
+  details: any;
 
   @Column()
   departmentId: string;
@@ -66,6 +70,12 @@ export class Employee extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   clients: Client[];
+
+  @OneToMany(() => Vendor, (vendors) => vendors.createdBy, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  vendors: Vendor[];
 
   @OneToMany(() => SocialMedia, (socialMedias) => socialMedias.manager, {
     cascade: true,

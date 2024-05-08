@@ -57,9 +57,12 @@ export class ExtraCrudService<T extends ObjectLiteral> {
   }
 
   async update(id: string, itemData: any): Promise<T | undefined> {
-    await this.findOneOrFail(id);
-    await this.repository.update(id, itemData);
-    return this.findOne(id);
+    const item = await this.findOneOrFail(id);
+    await this.repository.update(item.id, itemData);
+    return {
+      ...item,
+      ...itemData,
+    };
   }
 
   async delete(id: string): Promise<void> {

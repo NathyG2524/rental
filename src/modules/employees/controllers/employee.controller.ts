@@ -8,6 +8,7 @@ import {
   CreateEmployeeDto,
   LoginDto,
   UpdateAccountPermissionDto,
+  UpdateEmployeeDetailDto,
 } from '../dtos/employee.dto';
 import { AllowAnonymous } from 'src/shared/authorization';
 
@@ -34,5 +35,10 @@ export class EmployeeController extends EntityCrudController<Employee>(
   @Post('update-permissions')
   async updateAccountPermission(@Body() itemData: UpdateAccountPermissionDto) {
     return await this.employeeService.updateAccountPermission(itemData);
+  }
+
+  @Post('update-detail')
+  async updateEmployeeDetail(@Body() itemData: UpdateEmployeeDetailDto) {
+    return await this.employeeService.updateEmployeeDetail(itemData);
   }
 }

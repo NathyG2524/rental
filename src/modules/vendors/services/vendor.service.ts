@@ -2,25 +2,25 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { EntityCrudService } from 'src/shared/service';
-import { Client } from 'src/entities';
-import { UpdateClientAdditionalInfoDto } from '../dtos/client.dto';
+import { Vendor } from '@entities';
+import { UpdateVendorAdditionalInfoDto } from '../dtos/vendor.dto';
 
 @Injectable()
-export class ClientService extends EntityCrudService<Client> {
+export class VendorService extends EntityCrudService<Vendor> {
   constructor(
-    @InjectRepository(Client)
-    private readonly repositoryClient: Repository<Client>,
+    @InjectRepository(Vendor)
+    private readonly repositoryVendor: Repository<Vendor>,
   ) {
-    super(repositoryClient);
+    super(repositoryVendor);
   }
 
   async updateAdditionalInfo(
     id: string,
-    itemData: UpdateClientAdditionalInfoDto,
+    itemData: UpdateVendorAdditionalInfoDto,
   ) {
     const item = await this.findOneOrFail(id);
 
-    await this.repositoryClient.update(item.id, {
+    await this.repositoryVendor.update(item.id, {
       additionalInfo: itemData.additionalInfo,
     });
 

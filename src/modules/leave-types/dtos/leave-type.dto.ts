@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class CreateLeaveTypeDto {
   @ApiProperty()
@@ -9,4 +9,16 @@ export class CreateLeaveTypeDto {
   @ApiProperty()
   @IsNumber()
   maxAllowedDate: number;
+
+  @ApiProperty()
+  @IsBoolean()
+  isPayment: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  isOptional: boolean;
+
+  @ApiProperty()
+  @IsBoolean()
+  includesHolidays: boolean;
 }
