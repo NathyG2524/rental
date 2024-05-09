@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateOnEmployee1715193911023 implements MigrationInterface {
-  name = 'UpdateOnEmployee1715193911023';
+export class Init1715259864859 implements MigrationInterface {
+  name = 'Init1715259864859';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -20,10 +20,13 @@ export class UpdateOnEmployee1715193911023 implements MigrationInterface {
       `CREATE TABLE "employee_accounts" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "username" character varying NOT NULL, "password" character varying NOT NULL, "permissions" text, "employeeId" uuid NOT NULL, CONSTRAINT "REL_654548866ec44cbe87b72eb0c4" UNIQUE ("employeeId"), CONSTRAINT "PK_c43f1a4433ff1c78db0f5950b21" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "social_medias" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "link" character varying NOT NULL, "managerId" uuid NOT NULL, CONSTRAINT "PK_f2f504aa5f1f4b2378057984362" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "vendors" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "tin" character varying NOT NULL, "email" character varying NOT NULL, "phone" character varying NOT NULL, "additionalInfo" jsonb, "createdById" uuid NOT NULL, CONSTRAINT "PK_9c956c9797edfae5c6ddacc4e6e" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "vendors" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "tin" character varying NOT NULL, "email" character varying NOT NULL, "phone" character varying NOT NULL, "additionalInfo" jsonb, "createdById" uuid NOT NULL, CONSTRAINT "PK_9c956c9797edfae5c6ddacc4e6e" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "employees" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "idNo" character varying NOT NULL, "email" character varying NOT NULL, "firstName" character varying NOT NULL, "lastName" character varying NOT NULL, "startDate" TIMESTAMP NOT NULL, "details" jsonb, "status" character varying NOT NULL DEFAULT 'Active', "departmentId" uuid, CONSTRAINT "PK_b9535a98350d5b26e7eb0c26af4" PRIMARY KEY ("id"))`,
+    );
+    await queryRunner.query(
+      `CREATE TABLE "social_medias" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "link" character varying NOT NULL, "managerId" uuid NOT NULL, CONSTRAINT "PK_f2f504aa5f1f4b2378057984362" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "employee_leave_allocations" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "employeeId" uuid NOT NULL, "allowedDate" integer NOT NULL, "leaveTypeId" uuid NOT NULL, CONSTRAINT "PK_b1be8a4fa6b2ad2acda38ea0683" PRIMARY KEY ("id"))`,
@@ -34,13 +37,6 @@ export class UpdateOnEmployee1715193911023 implements MigrationInterface {
     await queryRunner.query(
       `CREATE TABLE "leave_types" ("createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "id" uuid NOT NULL DEFAULT uuid_generate_v4(), "name" character varying NOT NULL, "maxAllowedDate" integer NOT NULL, "isPayment" boolean NOT NULL, "isOptional" boolean NOT NULL, "includesHolidays" boolean NOT NULL, CONSTRAINT "PK_359223e0755d19711813cd07394" PRIMARY KEY ("id"))`,
     );
-    await queryRunner.query(`ALTER TABLE "employees" DROP COLUMN "deletedAt"`);
-    await queryRunner.query(`ALTER TABLE "employees" DROP COLUMN "username"`);
-    await queryRunner.query(`ALTER TABLE "employees" ADD "details" jsonb`);
-    await queryRunner.query(
-      `ALTER TABLE "employees" ADD "departmentId" character varying NOT NULL`,
-    );
-    await queryRunner.query(`ALTER TABLE "employees" ADD "employeeId" uuid`);
     await queryRunner.query(
       `ALTER TABLE "employee_time_sheets" ADD CONSTRAINT "FK_3a46e4829550e00e3c52363ef7d" FOREIGN KEY ("employeeId") REFERENCES "employees"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
@@ -57,13 +53,13 @@ export class UpdateOnEmployee1715193911023 implements MigrationInterface {
       `ALTER TABLE "employee_accounts" ADD CONSTRAINT "FK_654548866ec44cbe87b72eb0c4d" FOREIGN KEY ("employeeId") REFERENCES "employees"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
-      `ALTER TABLE "social_medias" ADD CONSTRAINT "FK_189620f1482a269aba8ff0198f8" FOREIGN KEY ("managerId") REFERENCES "employees"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "employees" ADD CONSTRAINT "FK_fa00ce161b51b02fdf992ea9528" FOREIGN KEY ("employeeId") REFERENCES "departments"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "vendors" ADD CONSTRAINT "FK_7e6bf6f6083214da6e63be425ab" FOREIGN KEY ("createdById") REFERENCES "employees"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "employees" ADD CONSTRAINT "FK_4edfe103ebf2fcb98dbb582554b" FOREIGN KEY ("departmentId") REFERENCES "departments"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "social_medias" ADD CONSTRAINT "FK_189620f1482a269aba8ff0198f8" FOREIGN KEY ("managerId") REFERENCES "employees"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
     );
     await queryRunner.query(
       `ALTER TABLE "employee_leave_allocations" ADD CONSTRAINT "FK_13748b69ee3f62c1feef901fcd8" FOREIGN KEY ("employeeId") REFERENCES "employees"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`,
@@ -93,13 +89,13 @@ export class UpdateOnEmployee1715193911023 implements MigrationInterface {
       `ALTER TABLE "employee_leave_allocations" DROP CONSTRAINT "FK_13748b69ee3f62c1feef901fcd8"`,
     );
     await queryRunner.query(
-      `ALTER TABLE "vendors" DROP CONSTRAINT "FK_7e6bf6f6083214da6e63be425ab"`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "employees" DROP CONSTRAINT "FK_fa00ce161b51b02fdf992ea9528"`,
-    );
-    await queryRunner.query(
       `ALTER TABLE "social_medias" DROP CONSTRAINT "FK_189620f1482a269aba8ff0198f8"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "employees" DROP CONSTRAINT "FK_4edfe103ebf2fcb98dbb582554b"`,
+    );
+    await queryRunner.query(
+      `ALTER TABLE "vendors" DROP CONSTRAINT "FK_7e6bf6f6083214da6e63be425ab"`,
     );
     await queryRunner.query(
       `ALTER TABLE "employee_accounts" DROP CONSTRAINT "FK_654548866ec44cbe87b72eb0c4d"`,
@@ -116,22 +112,12 @@ export class UpdateOnEmployee1715193911023 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "employee_time_sheets" DROP CONSTRAINT "FK_3a46e4829550e00e3c52363ef7d"`,
     );
-    await queryRunner.query(`ALTER TABLE "employees" DROP COLUMN "employeeId"`);
-    await queryRunner.query(
-      `ALTER TABLE "employees" DROP COLUMN "departmentId"`,
-    );
-    await queryRunner.query(`ALTER TABLE "employees" DROP COLUMN "details"`);
-    await queryRunner.query(
-      `ALTER TABLE "employees" ADD "username" character varying NOT NULL`,
-    );
-    await queryRunner.query(
-      `ALTER TABLE "employees" ADD "deletedAt" TIMESTAMP`,
-    );
     await queryRunner.query(`DROP TABLE "leave_types"`);
     await queryRunner.query(`DROP TABLE "employee_leave_requests"`);
     await queryRunner.query(`DROP TABLE "employee_leave_allocations"`);
-    await queryRunner.query(`DROP TABLE "vendors"`);
     await queryRunner.query(`DROP TABLE "social_medias"`);
+    await queryRunner.query(`DROP TABLE "employees"`);
+    await queryRunner.query(`DROP TABLE "vendors"`);
     await queryRunner.query(`DROP TABLE "employee_accounts"`);
     await queryRunner.query(`DROP TABLE "departments"`);
     await queryRunner.query(`DROP TABLE "clients"`);

@@ -50,6 +50,16 @@ export class UpdateEmployeeDetailDto {
   details: any;
 }
 
+export class UpdateUpdatePasswordDto {
+  @ApiProperty()
+  @IsUUID()
+  employeeId: string;
+
+  @ApiProperty()
+  @IsString()
+  password: string;
+}
+
 export class LoginDto {
   @ApiProperty()
   @IsEmail()

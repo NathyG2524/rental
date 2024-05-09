@@ -9,6 +9,7 @@ import {
   LoginDto,
   UpdateAccountPermissionDto,
   UpdateEmployeeDetailDto,
+  UpdateUpdatePasswordDto,
 } from '../dtos/employee.dto';
 import { AllowAnonymous } from 'src/shared/authorization';
 
@@ -30,6 +31,11 @@ export class EmployeeController extends EntityCrudController<Employee>(
   @AllowAnonymous()
   async login(@Body() itemData: LoginDto) {
     return await this.employeeService.login(itemData);
+  }
+
+  @Post('update-password')
+  async updatePassword(@Body() itemData: UpdateUpdatePasswordDto) {
+    return await this.employeeService.updatePassword(itemData);
   }
 
   @Post('update-permissions')

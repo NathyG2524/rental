@@ -38,11 +38,14 @@ export class Employee extends BaseEntity {
   @Column({ type: 'jsonb', nullable: true })
   details: any;
 
-  @Column()
+  @Column({ default: 'Active' })
+  status: string;
+
+  @Column({ nullable: true })
   departmentId: string;
 
   @ManyToOne(() => Department, (department) => department.employees)
-  @JoinColumn({ name: 'employeeId' })
+  @JoinColumn({ name: 'departmentId' })
   department: Department;
 
   @OneToOne(

@@ -9,6 +9,7 @@ import {
   LoginResponseDto,
   UpdateAccountPermissionDto,
   UpdateEmployeeDetailDto,
+  UpdateUpdatePasswordDto,
 } from '../dtos/employee.dto';
 import { randomInt } from 'crypto';
 import { REQUEST } from '@nestjs/core';
@@ -77,6 +78,26 @@ export class EmployeeService extends EntityCrudService<Employee> {
     };
   }
 
+  async updatePassword(input: UpdateUpdatePasswordDto) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const account = await manager.getRepository(EmployeeAccount).findOne({
+      where: {
+        employeeId: input.employeeId,
+      },
+    });
+
+    if (!account) {
+      throw new BadRequestException('something_went_wrong');
+    }
+
+    const password = this.authHelper.encodePassword(input.password);
+
+    await manager.getRepository(EmployeeAccount).update(account.id, {
+      password,
+    });
+  }
+
   async login(input: LoginDto) {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
@@ -85,9 +106,7 @@ export class EmployeeService extends EntityCrudService<Employee> {
         username: input.email,
       },
       relations: {
-        employee: {
-          employeeAccount: true,
-        },
+        employee: true,
       },
     });
 
@@ -110,7 +129,7 @@ export class EmployeeService extends EntityCrudService<Employee> {
         firstName: account.employee.firstName,
         lastName: account.employee.lastName,
         email: account.employee.email,
-        permissions: account.employee.employeeAccount.permissions,
+        permissions: account.permissions,
       }),
       refresh_token: this.authHelper.generateRefreshToken({
         id: account.employeeId,
