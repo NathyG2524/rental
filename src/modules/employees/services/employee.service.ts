@@ -36,13 +36,13 @@ export class EmployeeService extends EntityCrudService<Employee> {
 
     const randomNumber = randomInt(100000, 999999);
 
-    employee.idNo = randomNumber.toString();
+    employee.idNo = `EMP-${randomNumber.toString()}`;
 
     await manager.getRepository(Employee).insert(employee);
 
-    const password = this.authHelper.encodePassword(randomNumber.toString());
+    const password = this.authHelper.encodePassword('12345');
 
-    manager.getRepository(EmployeeAccount).create({
+    manager.getRepository(EmployeeAccount).insert({
       employeeId: employee.id,
       username: employee.email,
       password,
@@ -95,6 +95,7 @@ export class EmployeeService extends EntityCrudService<Employee> {
 
     await manager.getRepository(EmployeeAccount).update(account.id, {
       password,
+      isPasswordUpdated: true,
     });
   }
 
@@ -134,6 +135,7 @@ export class EmployeeService extends EntityCrudService<Employee> {
       refresh_token: this.authHelper.generateRefreshToken({
         id: account.employeeId,
       }),
+      isPasswordUpdated: account.isPasswordUpdated,
     };
 
     return token;

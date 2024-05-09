@@ -25,6 +25,9 @@ export class EmployeeAccount extends BaseEntity {
   })
   permissions: string[];
 
+  @Column({ default: false })
+  isPasswordUpdated: boolean;
+
   @Column()
   employeeId: string;
 

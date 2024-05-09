@@ -23,8 +23,11 @@ export class Employee extends BaseEntity {
   @Column()
   idNo: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
+
+  @Column({ nullable: true })
+  phone: string;
 
   @Column()
   firstName: string;

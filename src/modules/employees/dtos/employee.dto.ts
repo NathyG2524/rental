@@ -14,6 +14,10 @@ export class CreateEmployeeDto {
   email: string;
 
   @ApiProperty()
+  @IsEmail()
+  phone: string;
+
+  @ApiProperty()
   @IsString()
   firstName: string;
 
@@ -75,4 +79,6 @@ export class LoginResponseDto {
   public access_token: string;
   @ApiProperty()
   public refresh_token?: string;
+  @ApiProperty()
+  public isPasswordUpdated: boolean;
 }
