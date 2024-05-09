@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsObject,
   IsString,
+  IsUUID,
 } from 'class-validator';
 
 export class CreateEmployeeDto {
@@ -31,7 +32,7 @@ export class CreateEmployeeDto {
 
 export class UpdateAccountPermissionDto {
   @ApiProperty()
-  @IsEmail()
+  @IsUUID()
   employeeId: string;
 
   @ApiProperty()
@@ -41,7 +42,7 @@ export class UpdateAccountPermissionDto {
 
 export class UpdateEmployeeDetailDto {
   @ApiProperty()
-  @IsEmail()
+  @IsUUID()
   employeeId: string;
 
   @ApiProperty()
