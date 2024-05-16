@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { EmployeeService } from '../services/employee.service';
 import { Employee } from '@entities';
@@ -12,6 +12,7 @@ import {
   UpdateUpdatePasswordDto,
 } from '../dtos/employee.dto';
 import { AllowAnonymous } from 'src/shared/authorization';
+import JwtRefreshGuard from 'src/shared/authorization/guards/jwt-refresh.guard';
 
 const options: EntityCrudOptions = {
   createDto: CreateEmployeeDto,
@@ -29,8 +30,15 @@ export class EmployeeController extends EntityCrudController<Employee>(
 
   @Post('login')
   @AllowAnonymous()
-  async login(@Body() itemData: LoginDto) {
-    return await this.employeeService.login(itemData);
+  async login(@Body() itemData: LoginDto, @Req() req: Request) {
+    return await this.employeeService.login(itemData, req);
+  }
+
+  @Post('refresh-token')
+  @AllowAnonymous()
+  @UseGuards(JwtRefreshGuard)
+  refreshToken(@Req() req: Request) {
+    return this.employeeService.refreshToken(req);
   }
 
   @Post('update-password')

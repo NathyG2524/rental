@@ -80,5 +80,5 @@ export class LoginResponseDto {
   @ApiProperty()
   public refresh_token?: string;
   @ApiProperty()
-  public isPasswordUpdated: boolean;
+  public isPasswordUpdated?: boolean;
 }

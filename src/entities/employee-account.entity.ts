@@ -28,6 +28,9 @@ export class EmployeeAccount extends BaseEntity {
   @Column({ default: false })
   isPasswordUpdated: boolean;
 
+  @Column({ nullable: true })
+  lastLogon: Date;
+
   @Column()
   employeeId: string;
 

@@ -1,6 +1,11 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { EntityCrudService } from 'src/shared/service';
 import { Employee, EmployeeAccount } from 'src/entities';
 import {
@@ -44,7 +49,7 @@ export class EmployeeService extends EntityCrudService<Employee> {
 
     manager.getRepository(EmployeeAccount).insert({
       employeeId: employee.id,
-      username: employee.email,
+      username: employee.email.toLocaleLowerCase(),
       password,
     });
 
@@ -99,12 +104,14 @@ export class EmployeeService extends EntityCrudService<Employee> {
     });
   }
 
-  async login(input: LoginDto) {
+  async login(input: LoginDto, req?: any) {
+    console.log('🚀 ~ EmployeeService ~ login ~ req:', req);
+
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
     const account = await manager.getRepository(EmployeeAccount).findOne({
       where: {
-        username: input.email,
+        username: input.email.toLocaleLowerCase(),
       },
       relations: {
         employee: true,
@@ -124,6 +131,10 @@ export class EmployeeService extends EntityCrudService<Employee> {
       throw new BadRequestException('something_went_wrong');
     }
 
+    await manager.getRepository(EmployeeAccount).update(account.id, {
+      lastLogon: new Date(),
+    });
+
     const token: LoginResponseDto = {
       access_token: this.authHelper.generateAccessToken({
         id: account.employeeId,
@@ -133,9 +144,43 @@ export class EmployeeService extends EntityCrudService<Employee> {
         permissions: account.permissions,
       }),
       refresh_token: this.authHelper.generateRefreshToken({
-        id: account.employeeId,
+        id: account.id,
       }),
       isPasswordUpdated: account.isPasswordUpdated,
+    };
+
+    return token;
+  }
+
+  public async refreshToken(req: any): Promise<LoginResponseDto | never> {
+    const user = req.user;
+    if (!user) {
+      throw new UnauthorizedException('invalid_refresh_token');
+    }
+    const id = user.id;
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const account = await manager.getRepository(EmployeeAccount).findOne({
+      where: {
+        id,
+      },
+      relations: {
+        employee: true,
+      },
+    });
+
+    if (!account) {
+      throw new BadRequestException('something_went_wrong');
+    }
+
+    const token: LoginResponseDto = {
+      access_token: this.authHelper.generateAccessToken({
+        id: account.employeeId,
+        firstName: account.employee.firstName,
+        lastName: account.employee.lastName,
+        email: account.employee.email,
+        permissions: account.permissions,
+      }),
     };
 
     return token;
