@@ -1,10 +1,12 @@
-import { Controller, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { EmployeeTimeSheetService } from '../services/employee-time-sheet.service';
 import { EmployeeTimeSheet } from '@entities';
 import { EntityCrudOptions } from 'src/shared/types/crud-option.type';
 import { EntityCrudController } from 'src/shared/controller';
 import { CreateEmployeeTimeSheetDto } from '../dtos/employee-time-sheet.dto';
+import { AllowAnonymous } from 'src/shared/authorization';
+import { decodeCollectionQuery } from 'src/shared/collection-query';
 
 const options: EntityCrudOptions = {
   createDto: CreateEmployeeTimeSheetDto,
@@ -22,7 +24,21 @@ export class EmployeeTimeSheetController extends EntityCrudController<EmployeeTi
     super(employeeTimeSheetService);
   }
 
+  @Post('employee-status')
+  @ApiQuery({
+    name: 'q',
+    type: String,
+    description: 'Collection Query Parameter. Optional',
+    required: false,
+  })
+  @AllowAnonymous()
+  async getEmployeeTimeSheet(@Query('q') q?: string) {
+    const query = decodeCollectionQuery(q);
+    return this.employeeTimeSheetService.getEmployeeTimeSheet(query);
+  }
+
   @Post('mark-all-as-present')
+  @AllowAnonymous()
   async markAllAsPresent() {
     return this.employeeTimeSheetService.markAllAsPresent();
   }
