@@ -7,7 +7,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "copy": "copy \"package.json\" \"dist\" ",
-    "build": "nest build && npm run copy ",
+    "build-local": "nest build && npm run copy ",
+    "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
