@@ -31,7 +31,7 @@ jobs:
     - name: Create temporary directory
       run: mkdir -p /tmp/nest-build
     - name: Copy published files to temporary directory
-      run: cp -r /home/runner/work/251CEODashboard/dist/* /tmp/nest-build/
+      run: cp -r /home/runner/work/251CEODashboard/251CEODashboard/dist/* /tmp/nest-build/
     - name: Copy published files to temp folder on droplet
       uses: appleboy/scp-action@master
       with:
