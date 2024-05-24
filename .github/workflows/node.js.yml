@@ -44,5 +44,4 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
                 cd /home/zare251/temp/github/workspace && mv package.json ./dist
-                cd /var/www/251-ceo-dashboard && mv ./api /api-backup 
-                cd /home/zare251/temp/github/workspace && mv ./dist/* /var/www/251-ceo-dashboard/api
+                cd /var/www/251-ceo-dashboard && mv ./api /api-backup
