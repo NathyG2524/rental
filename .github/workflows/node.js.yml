@@ -55,4 +55,5 @@ jobs:
                 cd /home/zare251/temp/github/workspace && mv package.json ./dist
                 cd /var/www/251-ceo-dashboard && cp -r ./api ./api-backup
                 cd /home/zare251/temp/github/workspace && cp -r ./dist/* /var/www/251-ceo-dashboard/api
+                cd /var/www/251-ceo-dashboard && docker compose up -d --build 251-ceo-dashboard-api
 
