@@ -10,6 +10,8 @@ import { ProjectModule } from './modules/projects/project.module';
 import { SocialMediaModule } from './modules/social-medias/social-media.module';
 import { LeaveTypeModule } from './modules/leave-types/leave-type.module';
 import { VendorModule } from './modules/vendors/vendor.module';
+import { InvoiceModule } from './modules/invoices/invoice.module';
+import { QuotationModule } from './modules/quotations/quotation.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { VendorModule } from './modules/vendors/vendor.module';
     SocialMediaModule,
     LeaveTypeModule,
     VendorModule,
+    InvoiceModule,
+    QuotationModule,
   ],
   controllers: [],
   providers: [

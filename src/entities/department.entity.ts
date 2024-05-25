@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
+import { ProjectTeam } from './project-team.entity';
 
 @Entity({ name: 'departments' })
 export class Department extends BaseEntity {
@@ -38,4 +39,10 @@ export class Department extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   employees: Employee[];
+
+  @OneToMany(() => ProjectTeam, (projectTeams) => projectTeams.department, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  projectTeams: ProjectTeam[];
 }

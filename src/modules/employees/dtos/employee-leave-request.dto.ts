@@ -22,3 +22,17 @@ export class CreateEmployeeLeaveRequestDto {
   @IsString()
   reason: string;
 }
+
+export class UpdateEmployeeLeaveRequestStatusDto {
+  @ApiProperty()
+  @IsUUID()
+  id: string;
+
+  @ApiProperty()
+  @IsString()
+  status: string;
+
+  @ApiProperty()
+  @IsString()
+  reason: string;
+}

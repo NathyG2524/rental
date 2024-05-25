@@ -30,6 +30,9 @@ export class EmployeeLeaveRequest extends BaseEntity {
   @Column({ nullable: true })
   reason: string;
 
+  @Column({ default: 'REQUESTED' })
+  status: string;
+
   @Column({ type: 'jsonb', nullable: true })
   document: string;
 

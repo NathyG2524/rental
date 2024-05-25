@@ -19,7 +19,7 @@ export class EmployeeTimeSheet extends BaseEntity {
   @Column({ default: 'PRESENT' })
   status: string;
 
-  @CreateDateColumn({ type: 'date', default: 'CURRENT_TIMESTAMP ' })
+  @CreateDateColumn({ type: 'date' })
   date: Date;
 
   @Column()

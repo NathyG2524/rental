@@ -3,10 +3,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
+import { VendorTask } from './vendor-task.entity';
 
 @Entity({ name: 'vendors' })
 export class Vendor extends BaseEntity {
@@ -34,4 +36,10 @@ export class Vendor extends BaseEntity {
   @ManyToOne(() => Employee, (employee) => employee.clients)
   @JoinColumn({ name: 'createdById' })
   createdBy: Employee;
+
+  @OneToMany(() => VendorTask, (vendorTasks) => vendorTasks.vendor, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  vendorTasks: VendorTask[];
 }

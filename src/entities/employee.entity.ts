@@ -14,6 +14,9 @@ import { Department } from './department.entity';
 import { EmployeeAccount } from './employee-account.entity';
 import { SocialMedia } from './social-media.entity';
 import { Vendor } from './vendor.entity';
+import { ProjectTask } from './project-task.entity';
+import { Invoice } from './invoice.entity';
+import { Quotation } from './quotation.entity';
 
 @Entity({ name: 'employees' })
 export class Employee extends BaseEntity {
@@ -89,6 +92,26 @@ export class Employee extends BaseEntity {
   })
   socialMedias: SocialMedia[];
 
+  @OneToMany(
+    () => ProjectTask,
+    (assignedEmployees) => assignedEmployees.assignedEmployee,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  assignedEmployees: ProjectTask[];
+
+  @OneToMany(
+    () => ProjectTask,
+    (assignedReviewers) => assignedReviewers.assignedReviewer,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  assignedReviewers: ProjectTask[];
+
   @OneToOne(
     () => Department,
     (departmentResponsiblePerson) =>
@@ -99,4 +122,48 @@ export class Employee extends BaseEntity {
     },
   )
   departmentResponsiblePerson: Department;
+
+  @OneToMany(() => Invoice, (approvedBys) => approvedBys.invoiceApprovedBy, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  invoiceApprovedBys: Invoice[];
+
+  @OneToMany(() => Invoice, (checkedBys) => checkedBys.invoiceCheckedBy, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  invoiceCheckedBys: Invoice[];
+
+  @OneToMany(() => Invoice, (requestedBys) => requestedBys.invoiceRequestedBy, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  invoiceRequestedBys: Invoice[];
+
+  @OneToMany(
+    () => Quotation,
+    (approvedBys) => approvedBys.quotationApprovedBy,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  quotationApprovedBys: Quotation[];
+
+  @OneToMany(() => Quotation, (checkedBys) => checkedBys.quotationCheckedBy, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  quotationCheckedBys: Quotation[];
+
+  @OneToMany(
+    () => Quotation,
+    (requestedBys) => requestedBys.quotationRequestedBy,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  quotationRequestedBys: Quotation[];
 }
