@@ -14,6 +14,8 @@ import { InvoiceModule } from './modules/invoices/invoice.module';
 import { QuotationModule } from './modules/quotations/quotation.module';
 import { AccountPayableModule } from './modules/account-payables/account-payable.module';
 import { AccountReceivableModule } from './modules/account-receivables/account-receivable.module';
+import { OperatingCostModule } from './modules/operating-costs/operating-cost.module';
+import { ExpenseModule } from './modules/expenses/expense.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { AccountReceivableModule } from './modules/account-receivables/account-r
     QuotationModule,
     AccountPayableModule,
     AccountReceivableModule,
+    OperatingCostModule,
+    ExpenseModule,
   ],
   controllers: [],
   providers: [

@@ -21,3 +21,8 @@ export * from './account-payable-detail.entity';
 export * from './quotation-item.entity';
 export * from './account-receivable.entity';
 export * from './account-receivable-detail.entity';
+export * from './quotation-item.entity';
+export * from './operating-cost.entity';
+export * from './operating-cost-detail.entity';
+export * from './expense.entity';
+export * from './expense-detail.entity';

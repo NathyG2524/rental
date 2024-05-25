@@ -11,6 +11,7 @@ import { Client } from './client.entity';
 import { ProjectTeam } from './project-team.entity';
 import { VendorTask } from './vendor-task.entity';
 import { ProjectTask } from './project-task.entity';
+import { OperatingCost } from './operating-cost.entity';
 
 @Entity({ name: 'projects' })
 export class Project extends BaseEntity {
@@ -53,4 +54,10 @@ export class Project extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   vendorTasks: VendorTask[];
+
+  @OneToMany(() => OperatingCost, (operatingCosts) => operatingCosts.project, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  operatingCosts: OperatingCost[];
 }
