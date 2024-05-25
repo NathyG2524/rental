@@ -31,7 +31,21 @@ export class CreateEmployeeDto {
 
   @ApiProperty()
   @IsString()
+  tin: string;
+
+  @ApiProperty()
+  @IsString()
   departmentId: string;
+}
+
+export class UpdateEmployeeDto extends CreateEmployeeDto {
+  @ApiProperty()
+  @IsUUID()
+  employeeId: string;
+
+  @ApiProperty()
+  @IsArray()
+  permissions: string[];
 }
 
 export class UpdateAccountPermissionDto {

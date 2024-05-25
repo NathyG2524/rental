@@ -16,3 +16,8 @@ export * from './invoice.entity';
 export * from './invoice-item.entity';
 export * from './quotation.entity';
 export * from './quotation-item.entity';
+export * from './account-payable.entity';
+export * from './account-payable-detail.entity';
+export * from './quotation-item.entity';
+export * from './account-receivable.entity';
+export * from './account-receivable-detail.entity';

@@ -44,6 +44,18 @@ export class Employee extends BaseEntity {
   @Column({ type: 'jsonb', nullable: true })
   details: any;
 
+  @Column({ nullable: true })
+  tin: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  contractLetter: any;
+
+  @Column({ type: 'jsonb', nullable: true })
+  employeeIdPhoto: any;
+
+  @Column({ type: 'jsonb', nullable: true })
+  kebeleIdPhoto: any;
+
   @Column({ default: 'Active' })
   status: string;
 

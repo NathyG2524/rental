@@ -9,6 +9,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
 import { VendorTask } from './vendor-task.entity';
+import { AccountPayable } from './account-payable.entity';
 
 @Entity({ name: 'vendors' })
 export class Vendor extends BaseEntity {
@@ -42,4 +43,14 @@ export class Vendor extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   vendorTasks: VendorTask[];
+
+  @OneToMany(
+    () => AccountPayable,
+    (accountPayables) => accountPayables.vendor,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  accountPayables: AccountPayable[];
 }

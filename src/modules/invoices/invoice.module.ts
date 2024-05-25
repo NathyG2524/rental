@@ -3,7 +3,7 @@ import { InvoiceController } from './controllers/invoice.controller';
 import { InvoiceService } from './services/invoice.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Invoice, InvoiceItem } from 'src/entities';
-import { InvoiceItemController } from './controllers/invoice.controller copy';
+import { InvoiceItemController } from './controllers/invoice-item.controller';
 import { InvoiceItemService } from './services/invoice-item.service';
 
 @Module({

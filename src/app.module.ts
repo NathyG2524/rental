@@ -12,6 +12,8 @@ import { LeaveTypeModule } from './modules/leave-types/leave-type.module';
 import { VendorModule } from './modules/vendors/vendor.module';
 import { InvoiceModule } from './modules/invoices/invoice.module';
 import { QuotationModule } from './modules/quotations/quotation.module';
+import { AccountPayableModule } from './modules/account-payables/account-payable.module';
+import { AccountReceivableModule } from './modules/account-receivables/account-receivable.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { QuotationModule } from './modules/quotations/quotation.module';
     VendorModule,
     InvoiceModule,
     QuotationModule,
+    AccountPayableModule,
+    AccountReceivableModule,
   ],
   controllers: [],
   providers: [

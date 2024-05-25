@@ -10,6 +10,7 @@ import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
 import { Project } from './project.entity';
 import { Invoice } from './invoice.entity';
+import { AccountReceivable } from './account-receivable.entity';
 
 @Entity({ name: 'clients' })
 export class Client extends BaseEntity {
@@ -46,4 +47,14 @@ export class Client extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   invoices: Invoice[];
+
+  @OneToMany(
+    () => AccountReceivable,
+    (accountReceivables) => accountReceivables.client,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  accountReceivables: AccountReceivable[];
 }
