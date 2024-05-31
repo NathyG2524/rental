@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -24,6 +26,7 @@ import {
 import { AllowAnonymous } from 'src/shared/authorization';
 import JwtRefreshGuard from 'src/shared/authorization/guards/jwt-refresh.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 
 const options: EntityCrudOptions = {
   createDto: CreateEmployeeDto,
@@ -68,20 +71,33 @@ export class EmployeeController extends EntityCrudController<Employee>(
     return await this.employeeService.updateEmployeeDetail(itemData);
   }
 
-  @Post('upload-employee-id/id')
+  @Post('upload-employee-id/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
+  @AllowAnonymous()
   async uploadEmployeeId(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return {
-      id,
-      fileName: file.originalname,
-    };
+    const result = await this.employeeService.uploadEmployeeId(id, file);
+    return result;
   }
 
-  @Post('upload-contract-letter/id')
+  @Get('download-employee-id/:id')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file'))
+  @AllowAnonymous()
+  async downloadEmployeeId(@Param('id') id: string, @Res() res: Response) {
+    const result = await this.employeeService.downloadEmployeeId(id);
+
+    res.set({
+      ...result.response,
+    });
+
+    return res.send(result.buffer);
+  }
+
+  @Post('upload-contract-letter/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   async uploadContractLetter(
@@ -94,7 +110,7 @@ export class EmployeeController extends EntityCrudController<Employee>(
     };
   }
 
-  @Post('upload-kebele-id/id')
+  @Post('upload-kebele-id/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   async uploadKebeleId(

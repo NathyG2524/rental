@@ -16,13 +16,24 @@ import {
   UpdateEmployeeDetailDto,
   UpdateUpdatePasswordDto,
 } from '../dtos/employee.dto';
-import { randomInt } from 'crypto';
+import { randomInt, randomUUID } from 'crypto';
 import { REQUEST } from '@nestjs/core';
 import { ENTITY_MANAGER_KEY } from 'src/shared/interceptors';
 import { AuthHelper } from 'src/shared/authorization';
+import * as SftpClient from 'ssh2-sftp-client';
+import { extname } from 'path';
 
 @Injectable()
 export class EmployeeService extends EntityCrudService<Employee> {
+  private sftp: SftpClient;
+
+  private config = {
+    host: process.env.SFTP_HOST,
+    port: process.env.SFTP_PORT,
+    username: process.env.SFTP_USERNAME,
+    password: process.env.SFTP_PASSWORD,
+  };
+
   constructor(
     @InjectRepository(Employee)
     private readonly repositoryEmployee: Repository<Employee>,
@@ -30,6 +41,7 @@ export class EmployeeService extends EntityCrudService<Employee> {
     @Inject(REQUEST) private request: Request,
   ) {
     super(repositoryEmployee);
+    this.sftp = new SftpClient();
   }
 
   async create(itemData: CreateEmployeeDto, req?: any) {
@@ -184,5 +196,72 @@ export class EmployeeService extends EntityCrudService<Employee> {
     };
 
     return token;
+  }
+
+  async uploadEmployeeId(id: string, file: Express.Multer.File) {
+    const employee = await this.repositoryEmployee.findOneBy({ id });
+    if (!employee) {
+      throw new BadRequestException('employee_not_found');
+    }
+    const fileResult = await this.uploadFile(file);
+
+    await this.repositoryEmployee.update(id, {
+      employeeIdPhoto: fileResult as any,
+    });
+
+    return fileResult;
+  }
+
+  async downloadEmployeeId(id: string) {
+    const employee = await this.repositoryEmployee.findOneBy({ id });
+    if (!employee) {
+      throw new BadRequestException('employee_not_found');
+    } else if (!employee.employeeIdPhoto) {
+      throw new BadRequestException('employee_id_not_found');
+    }
+
+    return this.downloadFile(employee.employeeIdPhoto);
+  }
+  async uploadFile(file: Express.Multer.File) {
+    try {
+      await this.sftp.connect(this.config);
+
+      const remoteFilePath = process.env.SFTP_PATH;
+
+      const folderExists = await this.sftp.exists(remoteFilePath);
+
+      if (!folderExists) {
+        await this.sftp.mkdir(remoteFilePath);
+      }
+
+      const remotePath = `${remoteFilePath}${randomUUID()}${extname(file.originalname)}`;
+
+      await this.sftp.put(file.buffer, remotePath);
+
+      return {
+        path: remotePath,
+        originalname: file.originalname,
+        mimetype: file.mimetype,
+        size: file.size,
+      };
+    } catch (error) {
+      throw error;
+    } finally {
+      this.sftp.end();
+    }
+  }
+
+  async downloadFile(fileInfo: any) {
+    await this.sftp.connect(this.config as any);
+    const buffer = await this.sftp.get(fileInfo.path);
+
+    return {
+      buffer,
+      response: {
+        'Content-Type': `${fileInfo.mimetype}`,
+        'Content-Disposition': `attachment; filename="${fileInfo.originalname}"`,
+        'Content-Length': fileInfo.size,
+      },
+    };
   }
 }
