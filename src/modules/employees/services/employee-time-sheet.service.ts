@@ -113,7 +113,12 @@ export class EmployeeTimeSheetService extends EntityCrudService<EmployeeTimeShee
     leaves: EmployeeLeaveRequest[],
   ): any[] {
     const heatmap = [];
-    const timeSheetDates = new Set(timeSheets.map((t) => t.date.toString()));
+    const timeSheetDates = new Map();
+    timeSheets.forEach((timeSheet) => {
+      timeSheetDates.set(timeSheet.date.toString(), timeSheet.status);
+    });
+
+    // const timeSheetDates = new Set(timeSheets.map((t) => t.date.toString()));
 
     const leaveDates = new Map();
     leaves.forEach((leave) => {
@@ -126,7 +131,7 @@ export class EmployeeTimeSheetService extends EntityCrudService<EmployeeTimeShee
       }
     });
 
-    const allDates = [...timeSheetDates, ...leaveDates.keys()].sort();
+    const allDates = [...timeSheetDates.keys(), ...leaveDates.keys()].sort();
     const earliestDate = new Date(allDates[0]);
     const latestDate = new Date();
 
@@ -144,7 +149,7 @@ export class EmployeeTimeSheetService extends EntityCrudService<EmployeeTimeShee
       } else if (timeSheetDates.has(dateStr)) {
         heatmap.push({
           date: dateStr,
-          reason: 'PRESENT',
+          reason: timeSheetDates.get(dateStr),
           type: '',
         });
       } else {
