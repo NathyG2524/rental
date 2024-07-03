@@ -17,6 +17,7 @@ import { Vendor } from './vendor.entity';
 import { ProjectTask } from './project-task.entity';
 import { Invoice } from './invoice.entity';
 import { Quotation } from './quotation.entity';
+import { EmployeeLeaveRequest } from './employee-leave-request.entity';
 
 @Entity({ name: 'employees' })
 export class Employee extends BaseEntity {
@@ -178,4 +179,24 @@ export class Employee extends BaseEntity {
     },
   )
   quotationRequestedBys: Quotation[];
+
+  @OneToMany(
+    () => EmployeeLeaveRequest,
+    (employeeTimeSheets) => employeeTimeSheets.employee,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  employeeLeaveRequests: EmployeeLeaveRequest[];
+
+  @OneToMany(
+    () => EmployeeLeaveRequest,
+    (employeeTimeSheets) => employeeTimeSheets.approvedBy,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  employeeLeaveRequestApprovedBys: EmployeeLeaveRequest[];
 }

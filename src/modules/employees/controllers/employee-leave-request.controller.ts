@@ -8,6 +8,7 @@ import {
   CreateEmployeeLeaveRequestDto,
   UpdateEmployeeLeaveRequestStatusDto,
 } from '../dtos/employee-leave-request.dto';
+import { CurrentUser } from 'src/shared/authorization';
 
 const options: EntityCrudOptions = {
   createDto: CreateEmployeeLeaveRequestDto,
@@ -26,7 +27,10 @@ export class EmployeeLeaveRequestController extends EntityCrudController<Employe
   }
 
   @Post('update-status')
-  async updateStatus(@Body() itemData: UpdateEmployeeLeaveRequestStatusDto) {
-    return this.lEaLeaveTypeService.updateStatus(itemData);
+  async updateStatus(
+    @Body() itemData: UpdateEmployeeLeaveRequestStatusDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.lEaLeaveTypeService.updateStatus(itemData, user);
   }
 }

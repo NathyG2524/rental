@@ -42,4 +42,14 @@ export class EmployeeLeaveRequest extends BaseEntity {
   @ManyToOne(() => LeaveType, (leaveType) => leaveType.employeeLeaveRequests)
   @JoinColumn({ name: 'leaveTypeId' })
   leaveType: LeaveType;
+
+  @Column({ nullable: true })
+  approvedById: string;
+
+  @ManyToOne(
+    () => Employee,
+    (employee) => employee.employeeLeaveRequestApprovedBys,
+  )
+  @JoinColumn({ name: 'approvedById' })
+  approvedBy: Employee;
 }

@@ -14,11 +14,12 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
     super(repositoryLeaveType);
   }
 
-  async updateStatus(itemData: UpdateEmployeeLeaveRequestStatusDto) {
+  async updateStatus(itemData: UpdateEmployeeLeaveRequestStatusDto, user: any) {
     const item = await this.findOneOrFail(itemData.id);
     await this.repositoryLeaveType.update(item.id, {
       status: itemData.status,
       reason: itemData.reason,
+      approvedById: user.id,
     });
     return {
       ...item,

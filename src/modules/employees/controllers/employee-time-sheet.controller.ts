@@ -1,4 +1,4 @@
-import { Controller, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { EmployeeTimeSheetService } from '../services/employee-time-sheet.service';
 import { EmployeeTimeSheet } from '@entities';
@@ -41,5 +41,11 @@ export class EmployeeTimeSheetController extends EntityCrudController<EmployeeTi
   @AllowAnonymous()
   async markAllAsPresent() {
     return this.employeeTimeSheetService.markAllAsPresent();
+  }
+
+  @Get('heatmap/:employeeId')
+  @AllowAnonymous()
+  async getAttendanceHeatmap(@Param('employeeId') employeeId: string) {
+    return this.employeeTimeSheetService.getAttendanceHeatmap(employeeId);
   }
 }
