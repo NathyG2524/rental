@@ -60,6 +60,9 @@ export class Employee extends BaseEntity {
   @Column({ default: 'Active' })
   status: string;
 
+  @Column({ default: 16 })
+  remainingLeaveDays: number;
+
   @Column({ nullable: true })
   departmentId: string;
 

@@ -18,7 +18,7 @@ export class Department extends BaseEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   location: string;
 
   @Column({

@@ -20,6 +20,7 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
       status: itemData.status,
       reason: itemData.reason,
       approvedById: user.id,
+      approvedAt: new Date(),
     });
     return {
       ...item,
