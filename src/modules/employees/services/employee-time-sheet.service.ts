@@ -128,7 +128,7 @@ export class EmployeeTimeSheetService extends EntityCrudService<EmployeeTimeShee
 
     const allDates = [...timeSheetDates, ...leaveDates.keys()].sort();
     const earliestDate = new Date(allDates[0]);
-    const latestDate = new Date(allDates[allDates.length - 1]);
+    const latestDate = new Date();
 
     // Generate all dates between earliest and latest dates
     const currentDate = new Date(earliestDate);
