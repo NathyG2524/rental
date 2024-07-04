@@ -34,7 +34,7 @@ export class Project extends BaseEntity {
   clientId: string;
 
   @ManyToOne(() => Client, (client) => client.projects)
-  @JoinColumn({ name: 'createdById' })
+  @JoinColumn({ name: 'clientId' })
   client: Client;
 
   @OneToMany(() => ProjectTeam, (projectTeams) => projectTeams.project, {

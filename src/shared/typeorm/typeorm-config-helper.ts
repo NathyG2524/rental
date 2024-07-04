@@ -11,8 +11,15 @@ export const TypeOrmConfigHelper = {
   DATABASE_PASSWORD: process.env.DATABASE_PASSWORD ?? 'P@ssw0rd@P',
 };
 
-const pathPrefix =
-  process.env.NODE_ENV === 'production' ? 'apps/server/iam-be/' : '';
+const entities =
+  process.env.NODE_ENV === 'production'
+    ? '/**/*.entity.*'
+    : 'dist/**/*.entity.{ts,js}';
+
+const migrations =
+  process.env.NODE_ENV === 'production'
+    ? 'migrations/*.{ts,js}'
+    : 'dist/migrations/*.{ts,js}';
 
 export const dataSourceOptions = {
   type: 'postgres',
@@ -21,10 +28,10 @@ export const dataSourceOptions = {
   database: TypeOrmConfigHelper.DATABASE_NAME,
   username: TypeOrmConfigHelper.DATABASE_USER,
   password: TypeOrmConfigHelper.DATABASE_PASSWORD,
-  entities: [`${pathPrefix}dist/**/*.entity.{ts,js}`],
-  migrations: [`${pathPrefix}dist/migrations/*.{ts,js}`],
+  entities: [entities],
+  migrations: [migrations],
   migrationsRun: true,
-  seeds: [`${pathPrefix}dist/modules/seeders/**.seeder.{ts,js}`],
+  seeds: [`dist/modules/seeders/**.seeder.{ts,js}`],
   migrationsTableName: 'typeorm_migrations',
   logger: 'advanced-console',
   logging: 'all',
