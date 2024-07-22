@@ -52,7 +52,7 @@ export class Project extends BaseEntity {
   })
   projectItems: QuotationItem[];
 
-  @Column()
+  @Column({ nullable: true })
   departmentTeamId: string;
 
   @ManyToOne(() => DepartmentTeam, (client) => client.projects)
