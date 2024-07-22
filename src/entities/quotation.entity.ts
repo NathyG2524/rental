@@ -10,6 +10,7 @@ import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
 import { Client } from './client.entity';
 import { QuotationItem } from './quotation-item.entity';
+import { Project } from './project.entity';
 
 @Entity({ name: 'quotations' })
 export class Quotation extends BaseEntity {
@@ -56,9 +57,9 @@ export class Quotation extends BaseEntity {
   @JoinColumn({ name: 'clientId' })
   client: Client;
 
-  @OneToMany(() => QuotationItem, (quotationItem) => quotationItem.quotation, {
+  @OneToMany(() => Project, (projectTeams) => projectTeams.quotation, {
     cascade: true,
     onDelete: 'RESTRICT',
   })
-  quotationItems: QuotationItem[];
+  projects: Project[];
 }

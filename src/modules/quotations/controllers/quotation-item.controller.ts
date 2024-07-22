@@ -7,7 +7,7 @@ import { ExtraCrudController } from 'src/shared/controller';
 import { CreateQuotationItemDto } from '../dtos/quotation-item.dto';
 
 const options: ExtraCrudOptions = {
-  entityIdName: 'quotationId',
+  entityIdName: 'projectId',
   createDto: CreateQuotationItemDto,
 };
 

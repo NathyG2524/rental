@@ -12,6 +12,8 @@ import { ProjectTeam } from './project-team.entity';
 import { VendorTask } from './vendor-task.entity';
 import { ProjectTask } from './project-task.entity';
 import { OperatingCost } from './operating-cost.entity';
+import { QuotationItem } from './quotation-item.entity';
+import { Quotation } from './quotation.entity';
 
 @Entity({ name: 'projects' })
 export class Project extends BaseEntity {
@@ -36,6 +38,19 @@ export class Project extends BaseEntity {
   @ManyToOne(() => Client, (client) => client.projects)
   @JoinColumn({ name: 'clientId' })
   client: Client;
+
+  @Column()
+  quotationId: string;
+
+  @ManyToOne(() => Quotation, (client) => client.projects)
+  @JoinColumn({ name: 'quotationId' })
+  quotation: Quotation;
+
+  @OneToMany(() => QuotationItem, (projectTeams) => projectTeams.project, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  projectItems: QuotationItem[];
 
   @OneToMany(() => ProjectTeam, (projectTeams) => projectTeams.project, {
     cascade: true,

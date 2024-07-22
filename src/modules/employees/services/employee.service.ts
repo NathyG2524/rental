@@ -7,7 +7,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { EntityCrudService } from 'src/shared/service';
-import { Employee, EmployeeAccount } from 'src/entities';
+import {
+  Employee,
+  EmployeeAccount,
+  EmployeeLeaveRequest,
+  ProjectTask,
+} from 'src/entities';
 import {
   CreateEmployeeDto,
   LoginDto,
@@ -59,7 +64,7 @@ export class EmployeeService extends EntityCrudService<Employee> {
 
     const password = this.authHelper.encodePassword('12345');
 
-    manager.getRepository(EmployeeAccount).insert({
+    await manager.getRepository(EmployeeAccount).insert({
       employeeId: employee.id,
       username: employee.email.toLocaleLowerCase(),
       password,
@@ -262,6 +267,92 @@ export class EmployeeService extends EntityCrudService<Employee> {
         'Content-Disposition': `attachment; filename="${fileInfo.originalname}"`,
         'Content-Length': fileInfo.size,
       },
+    };
+  }
+
+  async basicEmployeeReport(employeeId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const [completedTask, employee, remainingLeaveDays] = await Promise.all([
+      manager.getRepository(ProjectTask).countBy({
+        assignedEmployeeId: employeeId,
+        status: 'Done',
+      }),
+      manager.getRepository(Employee).findOne({
+        where: {
+          id: employeeId,
+        },
+        select: {
+          details: true,
+        },
+      }),
+      manager.getRepository(EmployeeLeaveRequest).find({
+        where: {
+          employeeId,
+          status: 'APPROVED',
+        },
+        select: {
+          effectiveFrom: true,
+          effectiveTo: true,
+        },
+      }),
+    ]);
+
+    return {
+      completedTask,
+      totalLeaveTaken: remainingLeaveDays.reduce(
+        (a, b) =>
+          a +
+          Math.round(
+            (b.effectiveTo.getTime() - b.effectiveFrom.getTime()) /
+              (1000 * 3600 * 24),
+          ),
+        0,
+      ),
+      netSalary: employee?.details?.netSalary ?? 0,
+    };
+  }
+
+  async employeeProjectReport(employeeId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const [completedTask, employee, remainingLeaveDays] = await Promise.all([
+      manager.getRepository(ProjectTask).countBy({
+        assignedEmployeeId: employeeId,
+        status: 'Done',
+      }),
+      manager.getRepository(Employee).findOne({
+        where: {
+          id: employeeId,
+        },
+        select: {
+          details: true,
+        },
+      }),
+      manager.getRepository(EmployeeLeaveRequest).find({
+        where: {
+          employeeId,
+          status: 'APPROVED',
+        },
+        select: {
+          effectiveFrom: true,
+          effectiveTo: true,
+        },
+      }),
+    ]);
+
+    return {
+      completedTask,
+      totalLeaveTaken: remainingLeaveDays.reduce(
+        (a, b) =>
+          a +
+          Math.round(
+            (b.effectiveTo.getTime() - b.effectiveFrom.getTime()) /
+              (1000 * 3600 * 24),
+          ),
+        0,
+      ),
+      netSalary: employee?.details?.netSalary ?? 0,
     };
   }
 }

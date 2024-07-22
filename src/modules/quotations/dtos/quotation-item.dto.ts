@@ -16,5 +16,5 @@ export class CreateQuotationItemDto {
 
   @ApiProperty()
   @IsString()
-  quotationId: string;
+  projectId: string;
 }

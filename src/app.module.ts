@@ -16,6 +16,7 @@ import { AccountPayableModule } from './modules/account-payables/account-payable
 import { AccountReceivableModule } from './modules/account-receivables/account-receivable.module';
 import { OperatingCostModule } from './modules/operating-costs/operating-cost.module';
 import { ExpenseModule } from './modules/expenses/expense.module';
+import { EventListModule } from './modules/event-lists/event-list.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ExpenseModule } from './modules/expenses/expense.module';
     AccountReceivableModule,
     OperatingCostModule,
     ExpenseModule,
+    EventListModule,
   ],
   controllers: [],
   providers: [

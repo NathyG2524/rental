@@ -21,4 +21,8 @@ export class CreateProjectDto {
   @ApiProperty()
   @IsString()
   clientId: string;
+
+  @ApiProperty()
+  @IsString()
+  quotationId: string;
 }

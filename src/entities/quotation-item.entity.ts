@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
-import { Quotation } from './quotation.entity';
+import { Project } from './project.entity';
 
 @Entity({ name: 'quotation_items' })
 export class QuotationItem extends BaseEntity {
@@ -23,9 +23,9 @@ export class QuotationItem extends BaseEntity {
   quantity: number;
 
   @Column()
-  quotationId: string;
+  projectId: string;
 
-  @ManyToOne(() => Quotation, (quotation) => quotation.quotationItems)
-  @JoinColumn({ name: 'quotationId' })
-  quotation: Quotation;
+  @ManyToOne(() => Project, (quotation) => quotation.projectItems)
+  @JoinColumn({ name: 'projectId' })
+  project: Project;
 }
