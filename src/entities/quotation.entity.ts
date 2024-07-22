@@ -9,7 +9,6 @@ import {
 import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
 import { Client } from './client.entity';
-import { QuotationItem } from './quotation-item.entity';
 import { Project } from './project.entity';
 
 @Entity({ name: 'quotations' })

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Client } from './client.entity';
-import { ProjectTeam } from './project-team.entity';
+import { DepartmentTeam } from './department-team.entity';
 import { VendorTask } from './vendor-task.entity';
 import { ProjectTask } from './project-task.entity';
 import { OperatingCost } from './operating-cost.entity';
@@ -52,11 +52,12 @@ export class Project extends BaseEntity {
   })
   projectItems: QuotationItem[];
 
-  @OneToMany(() => ProjectTeam, (projectTeams) => projectTeams.project, {
-    cascade: true,
-    onDelete: 'RESTRICT',
-  })
-  projectTeams: ProjectTeam[];
+  @Column()
+  departmentTeamId: string;
+
+  @ManyToOne(() => DepartmentTeam, (client) => client.projects)
+  @JoinColumn({ name: 'departmentTeamId' })
+  departmentTeam: DepartmentTeam;
 
   @OneToMany(() => ProjectTask, (projectTasks) => projectTasks.project, {
     cascade: true,

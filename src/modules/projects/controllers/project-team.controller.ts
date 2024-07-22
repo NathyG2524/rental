@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { ProjectTeamService } from '../services/project-team.service';
-import { ProjectTeam } from '@entities';
+import { DepartmentTeamService } from '../services/department-team.service';
+import { DepartmentTeam } from '@entities';
 import { ExtraCrudOptions } from 'src/shared/types/crud-option.type';
 import { ExtraCrudController } from 'src/shared/controller';
 import { CreateProjectTeamDto } from '../dtos/project-team.dto';
@@ -14,10 +14,10 @@ const options: ExtraCrudOptions = {
 @ApiBearerAuth()
 @Controller('project-teams')
 @ApiTags('Project Teams')
-export class ProjectTeamController extends ExtraCrudController<ProjectTeam>(
+export class ProjectTeamController extends ExtraCrudController<DepartmentTeam>(
   options,
 ) {
-  constructor(private readonly projectTeamService: ProjectTeamService) {
+  constructor(private readonly projectTeamService: DepartmentTeamService) {
     super(projectTeamService);
   }
 }

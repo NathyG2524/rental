@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
-import { ProjectTeam } from './project-team.entity';
+import { DepartmentTeam } from './department-team.entity';
 import { Employee } from './employee.entity';
 import { Project } from './project.entity';
 
@@ -48,11 +48,14 @@ export class ProjectTask extends BaseEntity {
   assignedReviewer: Employee;
 
   @Column()
-  projectTeamId: string;
+  departmentTeamId: string;
 
-  @ManyToOne(() => ProjectTeam, (projectTeam) => projectTeam.projectTasks)
-  @JoinColumn({ name: 'projectTeamId' })
-  projectTeam: ProjectTeam;
+  @ManyToOne(
+    () => DepartmentTeam,
+    (departmentTeam) => departmentTeam.departmentTasks,
+  )
+  @JoinColumn({ name: 'departmentTeamId' })
+  departmentTeam: DepartmentTeam;
 
   @Column()
   projectId: string;

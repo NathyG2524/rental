@@ -9,7 +9,7 @@ export * from './leave-type.entity';
 export * from './vendor.entity';
 export * from './employee-leave-allocation.entity';
 export * from './employee-leave-request.entity';
-export * from './project-team.entity';
+export * from './department-team.entity';
 export * from './vendor-task.entity';
 export * from './project-task.entity';
 export * from './invoice.entity';

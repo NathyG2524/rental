@@ -3,16 +3,15 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
-import { Project } from './project.entity';
 import { Department } from './department.entity';
+import { Project } from './project.entity';
 import { ProjectTask } from './project-task.entity';
 
-@Entity({ name: 'project_teams' })
-export class ProjectTeam extends BaseEntity {
+@Entity({ name: 'department_teams' })
+export class DepartmentTeam extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -22,20 +21,19 @@ export class ProjectTeam extends BaseEntity {
   @Column({ nullable: true })
   departmentId: string;
 
-  @ManyToOne(() => Department, (department) => department.projectTeams)
+  @ManyToOne(() => Department, (department) => department.departmentTeams)
   @JoinColumn({ name: 'departmentId' })
   department: Department;
 
-  @Column()
-  projectId: string;
-
-  @ManyToOne(() => Project, (project) => project.projectTeams)
-  @JoinColumn({ name: 'projectId' })
-  project: Project;
-
-  @OneToMany(() => ProjectTask, (projectTasks) => projectTasks.projectTeam, {
+  @ManyToOne(() => Project, (projects) => projects.departmentTeam, {
     cascade: true,
     onDelete: 'RESTRICT',
   })
-  projectTasks: ProjectTask[];
+  projects: Project[];
+
+  @ManyToOne(() => ProjectTask, (projects) => projects.departmentTeam, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  departmentTasks: ProjectTask[];
 }
