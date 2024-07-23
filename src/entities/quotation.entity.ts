@@ -47,7 +47,7 @@ export class Quotation extends BaseEntity {
   quotationCheckedById: string;
 
   @ManyToOne(() => Employee, (employee) => employee.quotationCheckedBys)
-  @JoinColumn({ name: 'quotationCheckedBy' })
+  @JoinColumn({ name: 'quotationCheckedById' })
   quotationCheckedBy: Employee;
 
   @Column()
