@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
+
+export class ConvertQuotationDto {
+  @ApiProperty()
+  @IsUUID()
+  quotationId: string;
+}
 
 export class CreateInvoiceDto {
   @ApiProperty()
