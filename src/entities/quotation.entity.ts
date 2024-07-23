@@ -10,11 +10,15 @@ import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
 import { Client } from './client.entity';
 import { Project } from './project.entity';
+import { QuotationStatusEnum } from 'src/shared/enums/quotation-status.enum';
 
 @Entity({ name: 'quotations' })
 export class Quotation extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  reference: string;
 
   @Column()
   name: string;
@@ -25,7 +29,11 @@ export class Quotation extends BaseEntity {
   @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: QuotationStatusEnum,
+    default: QuotationStatusEnum.REQUESTED,
+  })
   status: string;
 
   @Column()
