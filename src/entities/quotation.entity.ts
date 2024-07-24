@@ -32,7 +32,7 @@ export class Quotation extends BaseEntity {
   @Column({
     type: 'enum',
     enum: QuotationStatusEnum,
-    default: QuotationStatusEnum.REQUESTED,
+    default: QuotationStatusEnum.DRAFT,
   })
   status: string;
 
