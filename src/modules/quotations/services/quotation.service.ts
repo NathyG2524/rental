@@ -21,9 +21,10 @@ export class QuotationService extends EntityCrudService<Quotation> {
     super(repositoryQuotation);
   }
 
-  async create(itemData: CreateQuotationDto): Promise<any> {
+  async create(itemData: CreateQuotationDto, req: any): Promise<any> {
     const item = this.repositoryQuotation.create(itemData);
     item.reference = 'QT' + Math.floor(100000 + Math.random() * 900000);
+    item.quotationRequestedById = req.user.id;
     await this.repositoryQuotation.insert(item);
     return item;
   }
