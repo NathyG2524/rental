@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { EntityCrudService } from 'src/shared/service';
-import { Invoice, Quotation } from 'src/entities';
+import { AccountReceivable, Invoice, Quotation } from 'src/entities';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { ENTITY_MANAGER_KEY } from 'src/shared/interceptors';
@@ -54,10 +54,19 @@ export class InvoiceService extends EntityCrudService<Invoice> {
     const invoice = manager.getRepository(Invoice).create({
       ...quotation,
       id: null,
+      reference: 'IN' + Math.floor(100000 + Math.random() * 900000),
       invoiceItems: invoiceItems,
     });
 
+    const accountReceivable = manager.getRepository(AccountReceivable).create({
+      ...quotation,
+      id: null,
+      reference: 'AR' + Math.floor(100000 + Math.random() * 900000),
+      accountPayableDetails: invoiceItems,
+    });
+
     await manager.getRepository(Invoice).save(invoice);
+    await manager.getRepository(AccountReceivable).save(accountReceivable);
     await manager.getRepository(Quotation).update(quotation.id, {
       status: QuotationStatusEnum.CONVERTED,
     });

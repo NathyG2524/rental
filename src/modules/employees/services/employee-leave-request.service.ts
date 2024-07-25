@@ -17,10 +17,7 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
     super(repositoryLeaveType);
   }
 
-  async create(
-    itemData: CreateEmployeeLeaveRequestDto,
-    req?: any,
-  ): Promise<any> {
+  async create(itemData: CreateEmployeeLeaveRequestDto): Promise<any> {
     if (itemData.effectiveFrom > itemData.effectiveTo) {
       throw new BadRequestException(
         'Effective From cannot be greater than Effective To',

@@ -9,6 +9,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { AccountPayableDetail } from './account-payable-detail.entity';
 import { Client } from './client.entity';
+import { AccountReceivableStatusEnum } from 'src/shared/enums/account-receivable-status.enum';
 
 @Entity({ name: 'account_receivables' })
 export class AccountReceivable extends BaseEntity {
@@ -16,9 +17,16 @@ export class AccountReceivable extends BaseEntity {
   id: string;
 
   @Column()
-  dueDate: Date;
+  reference: string;
 
   @Column()
+  dueDate: Date;
+
+  @Column({
+    type: 'enum',
+    enum: AccountReceivableStatusEnum,
+    default: AccountReceivableStatusEnum.NOT_RECEIVED,
+  })
   status: string;
 
   @Column()

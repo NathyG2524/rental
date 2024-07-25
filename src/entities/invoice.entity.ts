@@ -10,11 +10,15 @@ import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
 import { Client } from './client.entity';
 import { InvoiceItem } from './invoice-item.entity';
+import { InvoiceStatusEnum } from 'src/shared/enums/invoice-status.enum';
 
 @Entity({ name: 'invoices' })
 export class Invoice extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  reference: string;
 
   @Column()
   name: string;
@@ -25,7 +29,11 @@ export class Invoice extends BaseEntity {
   @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: InvoiceStatusEnum,
+    default: InvoiceStatusEnum.NOT_PAID,
+  })
   status: string;
 
   @Column()
