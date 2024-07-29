@@ -12,5 +12,5 @@ export class CreateAccountPayableDto {
 
   @ApiProperty()
   @IsString()
-  vendorId: string;
+  invoiceId: string;
 }

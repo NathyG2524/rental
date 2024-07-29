@@ -20,5 +20,17 @@ export class CreateAccountPayableDetailDto {
 
   @ApiProperty()
   @IsString()
+  type: string;
+
+  @ApiProperty()
+  @IsString()
+  status: string;
+
+  @ApiProperty()
+  @IsString()
+  vendorId: string;
+
+  @ApiProperty()
+  @IsString()
   accountPayableId: string;
 }
