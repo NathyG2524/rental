@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { AccountPayable } from './account-payable.entity';
+import { Vendor } from './vendor.entity';
 
 @Entity({ name: 'account_payable_details' })
 export class AccountPayableDetail extends BaseEntity {
@@ -24,6 +25,19 @@ export class AccountPayableDetail extends BaseEntity {
 
   @Column({ type: 'numeric' })
   paid: number;
+
+  @Column()
+  type: string;
+
+  @Column()
+  status: string;
+
+  @Column()
+  vendorId: string;
+
+  @ManyToOne(() => Vendor, (vendor) => vendor.accountPayableDetails)
+  @JoinColumn({ name: 'vendorId' })
+  vendor: Vendor;
 
   @Column()
   accountPayableId: string;

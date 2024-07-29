@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
-import { Vendor } from './vendor.entity';
 import { AccountPayableDetail } from './account-payable-detail.entity';
+import { Invoice } from './invoice.entity';
 
 @Entity({ name: 'account_payables' })
 export class AccountPayable extends BaseEntity {
@@ -22,11 +22,11 @@ export class AccountPayable extends BaseEntity {
   status: string;
 
   @Column()
-  vendorId: string;
+  invoiceId: string;
 
-  @ManyToOne(() => Vendor, (vendor) => vendor.accountPayables)
-  @JoinColumn({ name: 'vendorId' })
-  vendor: Vendor;
+  @ManyToOne(() => Invoice, (invoice) => invoice.accountPayables)
+  @JoinColumn({ name: 'invoiceId' })
+  invoice: Invoice;
 
   @OneToMany(
     () => AccountPayableDetail,

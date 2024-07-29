@@ -35,8 +35,6 @@ export class InvoiceService extends EntityCrudService<Invoice> {
 
     if (!quotation) {
       throw new BadRequestException('quotation_not_found');
-    } else if (quotation.status == QuotationStatusEnum.APPROVED) {
-      throw new BadRequestException('quotation_has_been_approved');
     } else if (quotation.status == QuotationStatusEnum.CONVERTED) {
       throw new BadRequestException('quotation_has_been_converted');
     }
