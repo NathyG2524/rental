@@ -51,23 +51,28 @@ export class InvoiceService extends EntityCrudService<Invoice> {
       project.projectItems.forEach((item) => {
         invoiceItems.push({
           ...item,
+          unit: item.quantity,
+          amount: item.unitPrice,
           projectId: project.id,
-          id: null,
+          id: undefined,
         });
       });
     });
 
     const invoice = manager.getRepository(Invoice).create({
       ...quotation,
-      id: null,
+      id: undefined,
       reference: 'IN' + Math.floor(100000 + Math.random() * 900000),
       status: InvoiceStatusEnum.NOT_PAID,
+      invoiceRequestedById: quotation.quotationRequestedById,
+      invoiceCheckedById: quotation.quotationCheckedById,
+      invoiceApprovedById: quotation.quotationApprovedById,
       invoiceItems: invoiceItems,
     });
 
     const accountReceivable = manager.getRepository(AccountReceivable).create({
       ...quotation,
-      id: null,
+      id: undefined,
       reference: 'AR' + Math.floor(100000 + Math.random() * 900000),
       status: AccountReceivableStatusEnum.NOT_RECEIVED,
       accountReceivableDetails: invoiceItems,
@@ -85,7 +90,7 @@ export class InvoiceService extends EntityCrudService<Invoice> {
 
     const accountPayable = manager.getRepository(AccountPayable).create({
       ...quotation,
-      id: null,
+      id: undefined,
       reference: 'AP' + Math.floor(100000 + Math.random() * 900000),
       invoiceId: invoice.id,
       status: AccountReceivableStatusEnum.NOT_RECEIVED,

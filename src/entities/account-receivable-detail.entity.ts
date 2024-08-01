@@ -23,7 +23,7 @@ export class AccountReceivableDetail extends BaseEntity {
   @Column({ type: 'numeric' })
   amount: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', nullable: true })
   paid: number;
 
   @Column({ type: 'numeric', nullable: true })

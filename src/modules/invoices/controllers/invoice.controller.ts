@@ -5,6 +5,7 @@ import { Invoice } from '@entities';
 import { EntityCrudOptions } from 'src/shared/types/crud-option.type';
 import { EntityCrudController } from 'src/shared/controller';
 import { ConvertQuotationDto, CreateInvoiceDto } from '../dtos/invoice.dto';
+import { AllowAnonymous } from 'src/shared/authorization';
 
 const options: EntityCrudOptions = {
   createDto: CreateInvoiceDto,
@@ -19,6 +20,7 @@ export class InvoiceController extends EntityCrudController<Invoice>(options) {
   }
 
   @Post('/convert-quotation')
+  @AllowAnonymous()
   async convertQuotation(@Body() itemData: ConvertQuotationDto) {
     return this.invoiceService.convertQuotation(itemData);
   }
