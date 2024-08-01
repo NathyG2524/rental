@@ -26,6 +26,9 @@ export class AccountReceivableDetail extends BaseEntity {
   @Column({ type: 'numeric' })
   paid: number;
 
+  @Column({ type: 'numeric', nullable: true })
+  days: number;
+
   @Column()
   projectId: string;
 

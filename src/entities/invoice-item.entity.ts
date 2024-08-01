@@ -23,6 +23,9 @@ export class InvoiceItem extends BaseEntity {
   @Column({ type: 'numeric' })
   quantity: number;
 
+  @Column({ type: 'numeric', nullable: true })
+  days: number;
+
   @Column()
   projectId: string;
 
