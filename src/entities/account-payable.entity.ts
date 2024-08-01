@@ -19,6 +19,9 @@ export class AccountPayable extends BaseEntity {
   dueDate: Date;
 
   @Column()
+  reference: string;
+
+  @Column()
   status: string;
 
   @Column()

@@ -14,6 +14,9 @@ import { ProjectTask } from './project-task.entity';
 import { OperatingCost } from './operating-cost.entity';
 import { QuotationItem } from './quotation-item.entity';
 import { Quotation } from './quotation.entity';
+import { InvoiceItem } from './invoice-item.entity';
+import { AccountPayableDetail } from './account-payable-detail.entity';
+import { AccountReceivableDetail } from './account-receivable-detail.entity';
 
 @Entity({ name: 'projects' })
 export class Project extends BaseEntity {
@@ -76,4 +79,30 @@ export class Project extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   operatingCosts: OperatingCost[];
+
+  @OneToMany(() => InvoiceItem, (operatingCosts) => operatingCosts.project, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  invoiceItems: InvoiceItem[];
+
+  @OneToMany(
+    () => AccountPayableDetail,
+    (operatingCosts) => operatingCosts.project,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  accountPayableDetails: AccountPayableDetail[];
+
+  @OneToMany(
+    () => AccountReceivableDetail,
+    (operatingCosts) => operatingCosts.project,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  accountReceivableDetails: AccountReceivableDetail[];
 }

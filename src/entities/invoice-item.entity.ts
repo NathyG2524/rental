@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Invoice } from './invoice.entity';
+import { Project } from './project.entity';
 
 @Entity({ name: 'invoice_items' })
 export class InvoiceItem extends BaseEntity {
@@ -21,6 +22,13 @@ export class InvoiceItem extends BaseEntity {
 
   @Column({ type: 'numeric' })
   quantity: number;
+
+  @Column()
+  projectId: string;
+
+  @ManyToOne(() => Project, (project) => project.invoiceItems)
+  @JoinColumn({ name: 'projectId' })
+  project: Project;
 
   @Column()
   invoiceId: string;

@@ -8,6 +8,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { AccountPayable } from './account-payable.entity';
 import { Vendor } from './vendor.entity';
+import { Project } from './project.entity';
 
 @Entity({ name: 'account_payable_details' })
 export class AccountPayableDetail extends BaseEntity {
@@ -31,6 +32,13 @@ export class AccountPayableDetail extends BaseEntity {
 
   @Column()
   status: string;
+
+  @Column()
+  projectId: string;
+
+  @ManyToOne(() => Project, (project) => project.accountPayableDetails)
+  @JoinColumn({ name: 'projectId' })
+  project: Project;
 
   @Column()
   vendorId: string;
