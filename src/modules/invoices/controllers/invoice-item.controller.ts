@@ -1,10 +1,11 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { InvoiceItemService } from '../services/invoice-item.service';
 import { InvoiceItem } from '@entities';
 import { ExtraCrudOptions } from 'src/shared/types/crud-option.type';
 import { ExtraCrudController } from 'src/shared/controller';
 import { CreateInvoiceItemDto } from '../dtos/invoice-item.dto';
+import { AllowAnonymous } from 'src/shared/authorization';
 
 const options: ExtraCrudOptions = {
   entityIdName: 'invoiceId',
@@ -19,5 +20,11 @@ export class InvoiceItemController extends ExtraCrudController<InvoiceItem>(
 ) {
   constructor(private readonly invoiceItemService: InvoiceItemService) {
     super(invoiceItemService);
+  }
+
+  @Get('fetch-items/:id')
+  @AllowAnonymous()
+  async fetchItems(@Param('id') id: string) {
+    return await this.invoiceItemService.fetchItems(id);
   }
 }
