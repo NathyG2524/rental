@@ -12,6 +12,7 @@ import { Client } from './client.entity';
 import { InvoiceItem } from './invoice-item.entity';
 import { InvoiceStatusEnum } from 'src/shared/enums/invoice-status.enum';
 import { AccountPayable } from './account-payable.entity';
+import { AccountReceivable } from './account-receivable.entity';
 
 @Entity({ name: 'invoices' })
 export class Invoice extends BaseEntity {
@@ -76,4 +77,10 @@ export class Invoice extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   accountPayables: AccountPayable[];
+
+  @OneToMany(() => AccountReceivable, (invoices) => invoices.invoice, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  accountReceivables: AccountReceivable[];
 }

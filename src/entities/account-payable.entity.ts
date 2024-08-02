@@ -9,6 +9,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { AccountPayableDetail } from './account-payable-detail.entity';
 import { Invoice } from './invoice.entity';
+import { AccountPayableStatusEnum } from 'src/shared/enums/account-receivable-status.enum';
 
 @Entity({ name: 'account_payables' })
 export class AccountPayable extends BaseEntity {
@@ -21,7 +22,11 @@ export class AccountPayable extends BaseEntity {
   @Column()
   reference: string;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: AccountPayableStatusEnum,
+    default: AccountPayableStatusEnum.NOT_PAID,
+  })
   status: string;
 
   @Column()

@@ -25,6 +25,11 @@ export class QuotationService extends EntityCrudService<Quotation> {
     const item = this.repositoryQuotation.create(itemData);
     item.reference = 'QT' + Math.floor(100000 + Math.random() * 900000);
     item.quotationRequestedById = req.user.id;
+
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + itemData.validityPeriod);
+    item.dueDate = dueDate;
+
     await this.repositoryQuotation.insert(item);
     return item;
   }

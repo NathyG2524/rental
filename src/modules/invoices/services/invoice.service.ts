@@ -70,6 +70,14 @@ export class InvoiceService extends EntityCrudService<Invoice> {
       invoiceItems: invoiceItems,
     });
 
+    await Promise.all([
+      await manager.getRepository(Invoice).save(invoice),
+
+      await manager.getRepository(Quotation).update(quotation.id, {
+        status: QuotationStatusEnum.CONVERTED,
+      }),
+    ]);
+
     const accountReceivable = manager.getRepository(AccountReceivable).create({
       ...quotation,
       id: undefined,
@@ -77,16 +85,6 @@ export class InvoiceService extends EntityCrudService<Invoice> {
       status: AccountReceivableStatusEnum.NOT_RECEIVED,
       accountReceivableDetails: invoiceItems,
     });
-
-    await Promise.all([
-      await manager.getRepository(Invoice).save(invoice),
-
-      await manager.getRepository(AccountReceivable).save(accountReceivable),
-
-      await manager.getRepository(Quotation).update(quotation.id, {
-        status: QuotationStatusEnum.CONVERTED,
-      }),
-    ]);
 
     const accountPayable = manager.getRepository(AccountPayable).create({
       ...quotation,
@@ -96,7 +94,10 @@ export class InvoiceService extends EntityCrudService<Invoice> {
       status: AccountReceivableStatusEnum.NOT_RECEIVED,
     });
 
-    await manager.getRepository(AccountPayable).save(accountPayable);
+    await Promise.all([
+      manager.getRepository(AccountReceivable).save(accountReceivable),
+      manager.getRepository(AccountPayable).save(accountPayable),
+    ]);
 
     return invoice;
   }

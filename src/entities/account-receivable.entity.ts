@@ -10,6 +10,7 @@ import { BaseEntity } from './base-entity';
 import { Client } from './client.entity';
 import { AccountReceivableStatusEnum } from 'src/shared/enums/account-receivable-status.enum';
 import { AccountReceivableDetail } from './account-receivable-detail.entity';
+import { Invoice } from './invoice.entity';
 
 @Entity({ name: 'account_receivables' })
 export class AccountReceivable extends BaseEntity {
@@ -28,6 +29,13 @@ export class AccountReceivable extends BaseEntity {
     default: AccountReceivableStatusEnum.NOT_RECEIVED,
   })
   status: string;
+
+  @Column()
+  invoiceId: string;
+
+  @ManyToOne(() => Invoice, (invoice) => invoice.accountReceivables)
+  @JoinColumn({ name: 'invoiceId' })
+  invoice: Invoice;
 
   @Column()
   clientId: string;

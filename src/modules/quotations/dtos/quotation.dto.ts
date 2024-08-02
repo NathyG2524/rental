@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateQuotationDto {
   @ApiProperty()
@@ -7,8 +7,8 @@ export class CreateQuotationDto {
   name: string;
 
   @ApiProperty()
-  @IsDateString()
-  dueDate: Date;
+  @IsNumber()
+  validityPeriod: number;
 
   @ApiProperty()
   @IsString()
