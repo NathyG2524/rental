@@ -24,7 +24,7 @@ export class AccountPayableDetail extends BaseEntity {
   @Column({ type: 'numeric' })
   amount: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', default: 0 })
   paid: number;
 
   @Column({ type: 'numeric', nullable: true })
