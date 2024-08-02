@@ -14,7 +14,10 @@ import { ENTITY_MANAGER_KEY } from 'src/shared/interceptors';
 import { QuotationStatusEnum } from 'src/shared/enums/quotation-status.enum';
 import { ConvertQuotationDto } from '../dtos/invoice.dto';
 import { InvoiceStatusEnum } from 'src/shared/enums/invoice-status.enum';
-import { AccountReceivableStatusEnum } from 'src/shared/enums/account-receivable-status.enum';
+import {
+  AccountPayableStatusEnum,
+  AccountReceivableStatusEnum,
+} from 'src/shared/enums/account-receivable-status.enum';
 
 @Injectable()
 export class InvoiceService extends EntityCrudService<Invoice> {
@@ -83,6 +86,7 @@ export class InvoiceService extends EntityCrudService<Invoice> {
       id: undefined,
       reference: 'AR' + Math.floor(100000 + Math.random() * 900000),
       status: AccountReceivableStatusEnum.NOT_RECEIVED,
+      invoiceId: invoice.id,
       accountReceivableDetails: invoiceItems,
     });
 
@@ -91,7 +95,7 @@ export class InvoiceService extends EntityCrudService<Invoice> {
       id: undefined,
       reference: 'AP' + Math.floor(100000 + Math.random() * 900000),
       invoiceId: invoice.id,
-      status: AccountReceivableStatusEnum.NOT_RECEIVED,
+      status: AccountPayableStatusEnum.NOT_PAID,
     });
 
     await Promise.all([
