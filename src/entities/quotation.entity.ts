@@ -27,7 +27,7 @@ export class Quotation extends BaseEntity {
   dueDate: Date;
 
   @Column()
-  validityPeriod: Date;
+  validityPeriod: number;
 
   @Column({ nullable: true })
   description: string;
