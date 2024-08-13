@@ -8,6 +8,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { Project } from './project.entity';
 import { Vendor } from './vendor.entity';
+import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
 @Entity({ name: 'vendor_tasks' })
 export class VendorTask extends BaseEntity {
@@ -17,7 +18,7 @@ export class VendorTask extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   budget: number;
 
   @Column()

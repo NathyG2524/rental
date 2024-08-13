@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { OperatingCost } from './operating-cost.entity';
+import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
 @Entity({ name: 'operating_cost_details' })
 export class OperatingCostDetail extends BaseEntity {
@@ -16,7 +17,7 @@ export class OperatingCostDetail extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   cost: number;
 
   @Column()

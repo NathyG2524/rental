@@ -9,6 +9,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { Project } from './project.entity';
 import { OperatingCostDetail } from './operating-cost-detail.entity';
+import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
 @Entity({ name: 'operating_costs' })
 export class OperatingCost extends BaseEntity {
@@ -18,10 +19,10 @@ export class OperatingCost extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   budgetAmount: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   spendingAmount: number;
 
   @Column()

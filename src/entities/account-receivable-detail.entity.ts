@@ -8,6 +8,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { AccountReceivable } from './account-receivable.entity';
 import { Project } from './project.entity';
+import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
 @Entity({ name: 'account_receivable_details' })
 export class AccountReceivableDetail extends BaseEntity {
@@ -17,16 +18,24 @@ export class AccountReceivableDetail extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   unit: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   amount: number;
 
-  @Column({ type: 'numeric', nullable: true })
+  @Column({
+    type: 'numeric',
+    transformer: new ColumnNumericTransformer(),
+    nullable: true,
+  })
   paid: number;
 
-  @Column({ type: 'numeric', nullable: true })
+  @Column({
+    type: 'numeric',
+    transformer: new ColumnNumericTransformer(),
+    nullable: true,
+  })
   days: number;
 
   @Column()

@@ -8,6 +8,7 @@ import {
 import { BaseEntity } from './base-entity';
 import { Invoice } from './invoice.entity';
 import { Project } from './project.entity';
+import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
 @Entity({ name: 'invoice_items' })
 export class InvoiceItem extends BaseEntity {
@@ -17,13 +18,17 @@ export class InvoiceItem extends BaseEntity {
   @Column()
   name: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   unitPrice: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   quantity: number;
 
-  @Column({ type: 'numeric', nullable: true })
+  @Column({
+    type: 'numeric',
+    transformer: new ColumnNumericTransformer(),
+    nullable: true,
+  })
   days: number;
 
   @Column()

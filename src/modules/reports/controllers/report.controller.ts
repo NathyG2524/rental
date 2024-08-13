@@ -14,6 +14,11 @@ export class ReportController {
     return await this.reportService.topLevelReport();
   }
 
+  @Get('total-profit')
+  async profitByClient() {
+    return await this.reportService.profitByClient();
+  }
+
   @Get('total-revenue/:type/from/:from/to/:to')
   async totalRevenue(
     @Param('type') type: string,
