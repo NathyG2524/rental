@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
+import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
 @Entity({ name: 'social_medias' })
 export class SocialMedia extends BaseEntity {
@@ -18,6 +19,20 @@ export class SocialMedia extends BaseEntity {
 
   @Column()
   link: string;
+
+  @Column({
+    type: 'numeric',
+    transformer: new ColumnNumericTransformer(),
+    nullable: true,
+  })
+  followers: number;
+
+  @Column({
+    type: 'numeric',
+    transformer: new ColumnNumericTransformer(),
+    nullable: true,
+  })
+  posts: number;
 
   @Column()
   managerId: string;

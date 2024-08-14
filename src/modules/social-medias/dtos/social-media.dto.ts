@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class CreateSocialMediaDto {
   @ApiProperty()
@@ -9,6 +9,14 @@ export class CreateSocialMediaDto {
   @ApiProperty()
   @IsString()
   link: string;
+
+  @ApiProperty()
+  @IsNumber()
+  followers: number;
+
+  @ApiProperty()
+  @IsNumber()
+  posts: number;
 
   @ApiProperty()
   @IsString()
