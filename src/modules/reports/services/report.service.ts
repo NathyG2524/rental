@@ -82,7 +82,7 @@ export class ReportService {
     };
   }
 
-  async profitByClient() {
+  async profitByClient(from: Date, to: Date) {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
     const [receivable, payable] = await Promise.all([
@@ -90,6 +90,7 @@ export class ReportService {
         where: {
           accountReceivable: {
             status: AccountReceivableStatusEnum.RECEIVED,
+            dueDate: Between(from, to),
           },
         },
         select: {
@@ -111,6 +112,7 @@ export class ReportService {
         where: {
           accountPayable: {
             status: AccountPayableStatusEnum.PAID,
+            dueDate: Between(from, to),
           },
         },
         select: {
@@ -127,7 +129,7 @@ export class ReportService {
     const receivablesByClient = this.groupByClient(receivable);
     const payableByClient = this.groupByClient(payable);
 
-    const revenueByClient = {};
+    const revenueByClient = [];
 
     const allClientIds = new Set([
       ...Object.keys(payableByClient),
@@ -139,7 +141,10 @@ export class ReportService {
       const payableTotal = payableByClient[clientId] || 0;
 
       // Calculate revenue for each client
-      revenueByClient[clientId] = receivableTotal - payableTotal;
+      revenueByClient.push({
+        client: clientId,
+        profit: receivableTotal - payableTotal,
+      });
     });
 
     return revenueByClient;
@@ -230,7 +235,6 @@ export class ReportService {
 
   private groupByClient(data: any) {
     return data.reduce((acc: any, curr: any) => {
-      const clientId = curr.project.client.id;
       const clientName = curr.project.client.name;
 
       // If the client already exists in the accumulator, add the paid amount

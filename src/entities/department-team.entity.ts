@@ -3,12 +3,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Department } from './department.entity';
 import { Project } from './project.entity';
 import { ProjectTask } from './project-task.entity';
+import { DepartmentTeamMember } from './department-team-member.entity';
 
 @Entity({ name: 'department_teams' })
 export class DepartmentTeam extends BaseEntity {
@@ -31,9 +33,19 @@ export class DepartmentTeam extends BaseEntity {
   })
   projects: Project[];
 
-  @ManyToOne(() => ProjectTask, (projects) => projects.departmentTeam, {
+  @OneToMany(() => ProjectTask, (projects) => projects.departmentTeam, {
     cascade: true,
     onDelete: 'RESTRICT',
   })
   departmentTasks: ProjectTask[];
+
+  @OneToMany(
+    () => DepartmentTeamMember,
+    (projects) => projects.departmentTeam,
+    {
+      cascade: true,
+      onDelete: 'RESTRICT',
+    },
+  )
+  departmentTeamMembers: DepartmentTeamMember[];
 }

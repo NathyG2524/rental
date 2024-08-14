@@ -14,9 +14,9 @@ export class ReportController {
     return await this.reportService.topLevelReport();
   }
 
-  @Get('total-profit')
-  async profitByClient() {
-    return await this.reportService.profitByClient();
+  @Get('total-profit/:from/:to')
+  async profitByClient(@Param('from') from: Date, @Param('to') to: Date) {
+    return await this.reportService.profitByClient(from, to);
   }
 
   @Get('total-revenue/:type')
