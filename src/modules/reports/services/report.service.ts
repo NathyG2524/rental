@@ -192,9 +192,12 @@ export class ReportService {
     const receivablesByMonth = this.groupByMonth(receivable);
     const payableByMonth = this.groupByMonth(payable);
 
-    const revenueByMonth = {};
+    const revenueByMonth = [];
     for (const month in payableByMonth) {
-      revenueByMonth[month] = receivablesByMonth[month] - payableByMonth[month];
+      revenueByMonth.push({
+        month,
+        revenue: receivablesByMonth[month] - payableByMonth[month],
+      });
     }
 
     return revenueByMonth;
