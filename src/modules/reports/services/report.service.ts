@@ -145,7 +145,8 @@ export class ReportService {
     return revenueByClient;
   }
 
-  async totalRevenue(type: string, from: Date, to: Date) {
+  async totalRevenue(type: string) {
+    const { from, to } = this.getDates(type);
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
     const [receivable, payable] = await Promise.all([
@@ -186,6 +187,30 @@ export class ReportService {
     ]);
 
     return this.handleMonthlyReport(receivable, payable);
+  }
+
+  private getDates(type: string) {
+    const to = new Date();
+    if (type === 'annually') {
+      const from = new Date(to.getFullYear(), 0, 1);
+      return {
+        from,
+        to,
+      };
+    } else if (type === 'monthly') {
+      const from = new Date(to.getFullYear(), to.getMonth(), 1);
+      return {
+        from,
+        to,
+      };
+    } else {
+      const from = new Date(to);
+      from.setDate(to.getDate() - to.getDay());
+      return {
+        from,
+        to,
+      };
+    }
   }
 
   private handleMonthlyReport(receivable: any, payable: any) {

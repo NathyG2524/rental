@@ -19,13 +19,9 @@ export class ReportController {
     return await this.reportService.profitByClient();
   }
 
-  @Get('total-revenue/:type/from/:from/to/:to')
-  async totalRevenue(
-    @Param('type') type: string,
-    @Param('from') from: Date,
-    @Param('to') to: Date,
-  ) {
-    return await this.reportService.totalRevenue(type, from, to);
+  @Get('total-revenue/:type')
+  async totalRevenue(@Param('type') type: string) {
+    return await this.reportService.totalRevenue(type);
   }
 
   @Get('employee/:employeeId')
