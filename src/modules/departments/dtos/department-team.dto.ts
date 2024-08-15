@@ -8,5 +8,9 @@ export class CreateDepartmentTeamDto {
 
   @ApiProperty()
   @IsString()
+  teamLeadId: string;
+
+  @ApiProperty()
+  @IsString()
   departmentId: string;
 }

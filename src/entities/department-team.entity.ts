@@ -11,6 +11,7 @@ import { Department } from './department.entity';
 import { Project } from './project.entity';
 import { ProjectTask } from './project-task.entity';
 import { DepartmentTeamMember } from './department-team-member.entity';
+import { Employee } from './employee.entity';
 
 @Entity({ name: 'department_teams' })
 export class DepartmentTeam extends BaseEntity {
@@ -21,13 +22,20 @@ export class DepartmentTeam extends BaseEntity {
   name: string;
 
   @Column({ nullable: true })
+  teamLeadId: string;
+
+  @ManyToOne(() => Employee, (department) => department.teamLeads)
+  @JoinColumn({ name: 'teamLeadId' })
+  teamLead: Employee;
+
+  @Column()
   departmentId: string;
 
   @ManyToOne(() => Department, (department) => department.departmentTeams)
   @JoinColumn({ name: 'departmentId' })
   department: Department;
 
-  @ManyToOne(() => Project, (projects) => projects.departmentTeam, {
+  @OneToMany(() => Project, (projects) => projects.departmentTeam, {
     cascade: true,
     onDelete: 'RESTRICT',
   })

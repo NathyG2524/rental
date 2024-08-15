@@ -19,6 +19,7 @@ import { Invoice } from './invoice.entity';
 import { Quotation } from './quotation.entity';
 import { EmployeeLeaveRequest } from './employee-leave-request.entity';
 import { DepartmentTeamMember } from './department-team-member.entity';
+import { DepartmentTeam } from './department-team.entity';
 
 @Entity({ name: 'employees' })
 export class Employee extends BaseEntity {
@@ -209,4 +210,10 @@ export class Employee extends BaseEntity {
     onDelete: 'RESTRICT',
   })
   departmentTeamMembers: DepartmentTeamMember[];
+
+  @OneToMany(() => DepartmentTeam, (projects) => projects.teamLead, {
+    cascade: true,
+    onDelete: 'RESTRICT',
+  })
+  teamLeads: DepartmentTeam[];
 }
