@@ -7,7 +7,7 @@ import { ExtraCrudController } from 'src/shared/controller';
 import { CreateDepartmentTeamMemberDto } from '../dtos/department-team-member.dto';
 
 const options: ExtraCrudOptions = {
-  entityIdName: 'departmentTeamMemberId',
+  entityIdName: 'departmentTeamId',
   createDto: CreateDepartmentTeamMemberDto,
 };
 
