@@ -1,13 +1,5 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from './base-entity';
-import { Project } from './project.entity';
 import { OperatingCostDetail } from './operating-cost-detail.entity';
 import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
@@ -24,13 +16,6 @@ export class OperatingCost extends BaseEntity {
 
   @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   spendingAmount: number;
-
-  @Column()
-  projectId: string;
-
-  @ManyToOne(() => Project, (project) => project.operatingCosts)
-  @JoinColumn({ name: 'projectId' })
-  project: Project;
 
   @OneToMany(
     () => OperatingCostDetail,

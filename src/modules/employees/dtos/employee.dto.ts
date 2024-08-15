@@ -36,6 +36,14 @@ export class CreateEmployeeDto {
   @ApiProperty()
   @IsString()
   departmentId: string;
+
+  @ApiProperty()
+  @IsString()
+  bankAccount: string;
+
+  @ApiProperty()
+  @IsString()
+  jobTitle: string;
 }
 
 export class UpdateEmployeeDto extends CreateEmployeeDto {

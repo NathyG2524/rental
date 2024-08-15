@@ -26,6 +26,12 @@ export class Client extends BaseEntity {
   @Column()
   phone: string;
 
+  @Column({ type: 'simple-array', nullable: true })
+  secondaryEmail: string[];
+
+  @Column({ type: 'simple-array', nullable: true })
+  secondaryPhone: string[];
+
   @Column({ type: 'jsonb', nullable: true })
   additionalInfo: any;
 

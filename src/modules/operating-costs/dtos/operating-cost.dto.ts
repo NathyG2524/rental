@@ -13,8 +13,4 @@ export class CreateOperatingCostDto {
   @ApiProperty()
   @IsNumber()
   spendingAmount: number;
-
-  @ApiProperty()
-  @IsString()
-  projectId: string;
 }

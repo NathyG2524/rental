@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsObject, IsString } from 'class-validator';
+import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
 
 export class CreateClientDto {
   @ApiProperty()
@@ -13,6 +13,16 @@ export class CreateClientDto {
   @ApiProperty()
   @IsString()
   phone: string;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  secondaryEmail: string[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  secondaryPhone: string[];
 
   @ApiProperty()
   @IsString()

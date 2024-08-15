@@ -227,6 +227,29 @@ export class EmployeeService extends EntityCrudService<Employee> {
 
     return this.downloadFile(employee.employeeIdPhoto);
   }
+
+  async downloadContractLetter(id: string) {
+    const employee = await this.repositoryEmployee.findOneBy({ id });
+    if (!employee) {
+      throw new BadRequestException('employee_not_found');
+    } else if (!employee.contractLetter) {
+      throw new BadRequestException('contract_letter_not_found');
+    }
+
+    return this.downloadFile(employee.contractLetter);
+  }
+
+  async downloadKebeleId(id: string) {
+    const employee = await this.repositoryEmployee.findOneBy({ id });
+    if (!employee) {
+      throw new BadRequestException('employee_not_found');
+    } else if (!employee.kebeleIdPhoto) {
+      throw new BadRequestException('kebele_id_photo_not_found');
+    }
+
+    return this.downloadFile(employee.kebeleIdPhoto);
+  }
+
   async uploadFile(file: Express.Multer.File) {
     try {
       await this.sftp.connect(this.config);

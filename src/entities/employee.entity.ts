@@ -66,6 +66,12 @@ export class Employee extends BaseEntity {
   remainingLeaveDays: number;
 
   @Column({ nullable: true })
+  bankAccount: string;
+
+  @Column({ nullable: true })
+  jobTitle: string;
+
+  @Column({ nullable: true })
   departmentId: string;
 
   @ManyToOne(() => Department, (department) => department.employees)

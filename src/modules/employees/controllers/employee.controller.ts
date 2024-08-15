@@ -108,6 +108,18 @@ export class EmployeeController extends EntityCrudController<Employee>(
     };
   }
 
+  @Get('download-contract-letter/:id')
+  @AllowAnonymous()
+  async downloadContractLetter(@Param('id') id: string, @Res() res: Response) {
+    const result = await this.employeeService.downloadContractLetter(id);
+
+    res.set({
+      ...result.response,
+    });
+
+    return res.send(result.buffer);
+  }
+
   @Post('upload-kebele-id/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
@@ -119,6 +131,18 @@ export class EmployeeController extends EntityCrudController<Employee>(
       id,
       fileName: file.originalname,
     };
+  }
+
+  @Get('download-kebele-id/:id')
+  @AllowAnonymous()
+  async downloadKebeleId(@Param('id') id: string, @Res() res: Response) {
+    const result = await this.employeeService.downloadKebeleId(id);
+
+    res.set({
+      ...result.response,
+    });
+
+    return res.send(result.buffer);
   }
 
   @Get('basic-employee-report/:id')
