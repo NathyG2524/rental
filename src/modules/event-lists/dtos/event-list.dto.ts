@@ -1,24 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsString } from 'class-validator';
 
 export class CreateEventListDto {
   @ApiProperty()
   @IsString()
-  name: string;
+  title: string;
 
   @ApiProperty()
-  @IsNumber()
-  maxAllowedDate: number;
+  @IsDateString()
+  start: Date;
 
   @ApiProperty()
-  @IsBoolean()
-  isPayment: boolean;
-
-  @ApiProperty()
-  @IsBoolean()
-  isOptional: boolean;
-
-  @ApiProperty()
-  @IsBoolean()
-  includesHolidays: boolean;
+  @IsDateString()
+  end: Date;
 }

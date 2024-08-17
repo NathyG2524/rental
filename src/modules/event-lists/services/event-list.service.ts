@@ -12,4 +12,10 @@ export class EventListService extends EntityCrudService<EventList> {
   ) {
     super(repositoryLeaveType);
   }
+
+  async bulkCreate(itemData: any[]): Promise<any> {
+    const item = this.repositoryLeaveType.create(itemData);
+    await this.repositoryLeaveType.insert(item);
+    return item;
+  }
 }
