@@ -239,6 +239,19 @@ export class EmployeeService extends EntityCrudService<Employee> {
     return this.downloadFile(employee.contractLetter);
   }
 
+  async uploadContractLetter(id: string, file: Express.Multer.File) {
+    const employee = await this.repositoryEmployee.findOneBy({ id });
+    if (!employee) {
+      throw new BadRequestException('employee_not_found');
+    }
+    const fileResult = await this.uploadFile(file);
+
+    await this.repositoryEmployee.update(id, {
+      contractLetter: fileResult as any,
+    });
+
+    return fileResult;
+  }
   async downloadKebeleId(id: string) {
     const employee = await this.repositoryEmployee.findOneBy({ id });
     if (!employee) {
@@ -250,6 +263,19 @@ export class EmployeeService extends EntityCrudService<Employee> {
     return this.downloadFile(employee.kebeleIdPhoto);
   }
 
+  async uploadKebeleId(id: string, file: Express.Multer.File) {
+    const employee = await this.repositoryEmployee.findOneBy({ id });
+    if (!employee) {
+      throw new BadRequestException('employee_not_found');
+    }
+    const fileResult = await this.uploadFile(file);
+
+    await this.repositoryEmployee.update(id, {
+      kebeleIdPhoto: fileResult as any,
+    });
+
+    return fileResult;
+  }
   async uploadFile(file: Express.Multer.File) {
     try {
       await this.sftp.connect(this.config);

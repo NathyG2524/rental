@@ -102,10 +102,8 @@ export class EmployeeController extends EntityCrudController<Employee>(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return {
-      id,
-      fileName: file.originalname,
-    };
+    const result = await this.employeeService.uploadContractLetter(id, file);
+    return result;
   }
 
   @Get('download-contract-letter/:id')
@@ -127,10 +125,8 @@ export class EmployeeController extends EntityCrudController<Employee>(
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return {
-      id,
-      fileName: file.originalname,
-    };
+    const result = await this.employeeService.uploadKebeleId(id, file);
+    return result;
   }
 
   @Get('download-kebele-id/:id')
