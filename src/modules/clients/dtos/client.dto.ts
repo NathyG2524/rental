@@ -25,6 +25,21 @@ export class CreateClientDto {
   secondaryPhone: string[];
 
   @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  companyName: string;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  contactPersonName: string;
+
+  @ApiProperty()
+  @IsArray()
+  @IsOptional()
+  contactPersonPhone: string;
+
+  @ApiProperty()
   @IsString()
   createdById: string;
 }

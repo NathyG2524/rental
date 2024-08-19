@@ -36,6 +36,9 @@ export class EmployeeLeaveRequest extends BaseEntity {
   @Column({ type: 'jsonb', nullable: true })
   document: string;
 
+  @Column({ default: false })
+  withNote: boolean;
+
   @Column({ nullable: true })
   approvedAt: Date;
 

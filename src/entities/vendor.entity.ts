@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
@@ -12,6 +13,7 @@ import { VendorTask } from './vendor-task.entity';
 import { AccountPayableDetail } from './account-payable-detail.entity';
 
 @Entity({ name: 'vendors' })
+@Unique(['name', 'email'])
 export class Vendor extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;

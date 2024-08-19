@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { Employee } from './employee.entity';
@@ -13,6 +14,7 @@ import { Invoice } from './invoice.entity';
 import { AccountReceivable } from './account-receivable.entity';
 
 @Entity({ name: 'clients' })
+@Unique(['name', 'email'])
 export class Client extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -25,6 +27,15 @@ export class Client extends BaseEntity {
 
   @Column()
   phone: string;
+
+  @Column({ nullable: true })
+  companyName: string;
+
+  @Column({ nullable: true })
+  contactPersonName: string;
+
+  @Column({ nullable: true })
+  contactPersonPhone: string;
 
   @Column({ type: 'simple-array', nullable: true })
   secondaryEmail: string[];

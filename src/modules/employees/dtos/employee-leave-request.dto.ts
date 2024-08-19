@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsString, IsUUID } from 'class-validator';
+import {
+  IsBooleanString,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateEmployeeLeaveRequestDto {
   @ApiProperty()
@@ -21,6 +27,11 @@ export class CreateEmployeeLeaveRequestDto {
   @ApiProperty()
   @IsString()
   reason: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsBooleanString()
+  withNote: boolean;
 }
 
 export class UpdateEmployeeLeaveRequestStatusDto {

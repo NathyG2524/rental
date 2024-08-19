@@ -30,12 +30,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = exception.message;
     }
 
+    if (exception.code == '23503') {
+      message = 'update or delete violates foreign key constraint';
+    }
+
     const responseData = {
       statusCode: status,
       message,
       path: request.url,
       timestamp: new Date().toISOString(),
-      exception,
+      exception: exception.code != '23503' ? exception : {},
     };
 
     this.logger.error(responseData);
