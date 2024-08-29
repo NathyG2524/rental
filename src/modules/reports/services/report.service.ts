@@ -9,6 +9,7 @@ import {
   EmployeeLeaveRequest,
   Project,
   ProjectTask,
+  Vendor,
 } from 'src/entities';
 import {
   AccountPayableStatusEnum,
@@ -24,32 +25,42 @@ export class ReportService {
   async basicEmployeeReport(employeeId: string) {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
-    const [completedTask, employee, remainingLeaveDays] = await Promise.all([
-      manager.getRepository(ProjectTask).countBy({
-        assignedEmployeeId: employeeId,
-        status: 'Done',
-      }),
-      manager.getRepository(Employee).findOne({
-        where: {
-          id: employeeId,
-        },
-        select: {
-          details: true,
-        },
-      }),
-      manager.getRepository(EmployeeLeaveRequest).find({
-        where: {
-          employeeId,
-          status: 'APPROVED',
-        },
-        select: {
-          effectiveFrom: true,
-          effectiveTo: true,
-        },
-      }),
-    ]);
+    const [completedProject, completedTask, employee, remainingLeaveDays] =
+      await Promise.all([
+        manager.getRepository(Project).count({
+          where: {
+            projectTasks: {
+              assignedEmployeeId: employeeId,
+              status: 'Done',
+            },
+          },
+        }),
+        manager.getRepository(ProjectTask).countBy({
+          assignedEmployeeId: employeeId,
+          status: 'Done',
+        }),
+        manager.getRepository(Employee).findOne({
+          where: {
+            id: employeeId,
+          },
+          select: {
+            details: true,
+          },
+        }),
+        manager.getRepository(EmployeeLeaveRequest).find({
+          where: {
+            employeeId,
+            status: 'APPROVED',
+          },
+          select: {
+            effectiveFrom: true,
+            effectiveTo: true,
+          },
+        }),
+      ]);
 
     return {
+      completedProject,
       completedTask,
       totalLeaveTaken: remainingLeaveDays.reduce(
         (a, b) =>
@@ -61,6 +72,118 @@ export class ReportService {
         0,
       ),
       netSalary: employee?.details?.netSalary ?? 0,
+    };
+  }
+
+  async departmentReport(departmentId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const [totalProject, completedProject] = await Promise.all([
+      manager.getRepository(Project).count({
+        where: {
+          projectTasks: {
+            departmentTeam: {
+              departmentId,
+            },
+          },
+        },
+      }),
+      manager.getRepository(Project).count({
+        where: {
+          projectTasks: {
+            departmentTeam: {
+              departmentId,
+            },
+            status: 'Done',
+          },
+        },
+      }),
+    ]);
+
+    return {
+      totalProject,
+      completedProject,
+    };
+  }
+
+  async departmentTeamReport(departmentTeamId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const [totalProject, completedProject] = await Promise.all([
+      manager.getRepository(Project).count({
+        where: {
+          projectTasks: {
+            departmentTeamId,
+          },
+        },
+      }),
+      manager.getRepository(Project).count({
+        where: {
+          projectTasks: {
+            departmentTeamId,
+            status: 'Done',
+          },
+        },
+      }),
+    ]);
+
+    return {
+      totalProject,
+      completedProject,
+    };
+  }
+
+  async quotationReport(quotationId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const [totalProject, completedProject, totalEmployee] = await Promise.all([
+      manager.getRepository(ProjectTask).count({
+        where: {
+          project: {
+            quotationId,
+          },
+          status: 'Done',
+        },
+      }),
+      manager.getRepository(ProjectTask).count({
+        where: {
+          project: {
+            quotationId,
+          },
+          status: Not('Done'),
+        },
+      }),
+      manager.getRepository(Employee).count({
+        where: {
+          assignedEmployees: {
+            project: {
+              quotationId,
+            },
+          },
+        },
+      }),
+    ]);
+
+    return {
+      totalProject,
+      completedProject,
+      totalEmployee,
+    };
+  }
+
+  async crmReport() {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const [totalClient, totalProject, totalVendor] = await Promise.all([
+      manager.getRepository(Client).count(),
+      manager.getRepository(Project).count(),
+      manager.getRepository(Vendor).count(),
+    ]);
+
+    return {
+      totalClient,
+      totalProject,
+      totalVendor,
     };
   }
 
