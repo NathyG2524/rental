@@ -28,3 +28,4 @@ export * from './expense.entity';
 export * from './expense-detail.entity';
 export * from './event-list.entity';
 export * from './department-team-member.entity';
+export * from './notification.entity';

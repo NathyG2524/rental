@@ -1,8 +1,8 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { EntityManager, Repository, SelectQueryBuilder } from 'typeorm';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { EntityCrudService } from 'src/shared/service';
-import { Quotation } from 'src/entities';
+import { Notification, Quotation } from 'src/entities';
 import {
   CollectionQuery,
   FilterOperators,
@@ -11,12 +11,16 @@ import {
 import { DataResponseFormat } from 'src/shared/api-data';
 import { CreateQuotationDto } from '../dtos/quotation.dto';
 import { QuotationStatusEnum } from 'src/shared/enums/quotation-status.enum';
+import { REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+import { ENTITY_MANAGER_KEY } from 'src/shared/interceptors';
 
 @Injectable()
 export class QuotationService extends EntityCrudService<Quotation> {
   constructor(
     @InjectRepository(Quotation)
     private readonly repositoryQuotation: Repository<Quotation>,
+    @Inject(REQUEST) private request: Request,
   ) {
     super(repositoryQuotation);
   }
@@ -29,8 +33,22 @@ export class QuotationService extends EntityCrudService<Quotation> {
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + itemData.validityPeriod);
     item.dueDate = dueDate;
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
-    await this.repositoryQuotation.insert(item);
+    await Promise.all([
+      manager.getRepository(Quotation).insert(item),
+      manager.getRepository(Notification).insert({
+        type: 'QuotationApprover',
+        content: 'You have been assigned as Quotation Approver',
+        employeeId: itemData.approvedById,
+      }),
+      manager.getRepository(Notification).insert({
+        type: 'QuotationChecker',
+        content: 'You have been assigned as Quotation Checker',
+        employeeId: itemData.checkedById,
+      }),
+    ]);
+
     return item;
   }
 

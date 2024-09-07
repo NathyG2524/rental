@@ -6,6 +6,7 @@ import {
   AccountPayable,
   AccountReceivable,
   Invoice,
+  Notification,
   Quotation,
 } from 'src/entities';
 import { REQUEST } from '@nestjs/core';
@@ -78,6 +79,17 @@ export class InvoiceService extends EntityCrudService<Invoice> {
 
       await manager.getRepository(Quotation).update(quotation.id, {
         status: QuotationStatusEnum.CONVERTED,
+      }),
+
+      manager.getRepository(Notification).insert({
+        type: 'InvoiceChecker',
+        content: 'You have been assigned as Invoice Checker',
+        employeeId: quotation.quotationCheckedById,
+      }),
+      manager.getRepository(Notification).insert({
+        type: 'InvoiceApprover',
+        content: 'You have been assigned as Invoice Approver',
+        employeeId: quotation.quotationApprovedById,
       }),
     ]);
 
