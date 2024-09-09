@@ -8,6 +8,7 @@ import {
   EmployeeLeaveAllocation,
   EmployeeLeaveRequest,
   EmployeeTimeSheet,
+  Notification,
 } from 'src/entities';
 import { EmployeeTimeSheetController } from './controllers/employee-time-sheet.controller';
 import { EmployeeTimeSheetService } from './services/employee-time-sheet.service';
@@ -25,6 +26,7 @@ import { EmployeeLeaveRequestService } from './services/employee-leave-request.s
       EmployeeTimeSheet,
       EmployeeLeaveAllocation,
       EmployeeLeaveRequest,
+      Notification,
     ]),
     AuthorizationModule,
   ],
