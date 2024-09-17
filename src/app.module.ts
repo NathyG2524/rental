@@ -18,6 +18,7 @@ import { OperatingCostModule } from './modules/operating-costs/operating-cost.mo
 import { ExpenseModule } from './modules/expenses/expense.module';
 import { EventListModule } from './modules/event-lists/event-list.module';
 import { ReportModule } from './modules/reports/report.module';
+import { NotificationModule } from './modules/notifications/notifcation.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { ReportModule } from './modules/reports/report.module';
     ExpenseModule,
     EventListModule,
     ReportModule,
+    NotificationModule,
   ],
   controllers: [],
   providers: [
