@@ -42,6 +42,7 @@ export class ReportController {
   }
 
   @Get('total-revenue/:type')
+  @AllowAnonymous()
   async totalRevenue(@Param('type') type: string) {
     return await this.reportService.totalRevenue(type);
   }

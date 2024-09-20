@@ -314,7 +314,13 @@ export class ReportService {
       }),
     ]);
 
-    return this.handleMonthlyReport(receivable, payable);
+    if (type == 'annually') {
+      return this.handleMonthlyReport(receivable, payable);
+    } else if (type == 'weekly') {
+      return this.handleWeeklyReport(receivable, payable, from, to);
+    } else if (type == 'daily') {
+      return this.handleDailyReport(receivable, payable, from, to);
+    }
   }
 
   private getDates(type: string) {
@@ -325,25 +331,88 @@ export class ReportService {
         from,
         to,
       };
-    } else if (type === 'monthly') {
+    } else {
       const from = new Date(to.getFullYear(), to.getMonth(), 1);
       return {
         from,
         to,
       };
-    } else {
-      const from = new Date(to);
-      from.setDate(to.getDate() - to.getDay());
-      return {
-        from,
-        to,
-      };
     }
+    // else if (type === 'weekly') {
+    //   const from = new Date(to.getFullYear(), to.getMonth(), 1);
+    //   return {
+    //     from,
+    //     to,
+    //   };
+    // } else {
+    //   const from = new Date(to);
+    //   from.setDate(to.getDate() - to.getDay());
+    //   return {
+    //     from,
+    //     to,
+    //   };
+    // }
   }
 
   private handleMonthlyReport(receivable: any, payable: any) {
     const receivablesByMonth = this.groupByMonth(receivable);
     const payableByMonth = this.groupByMonth(payable);
+
+    const revenueByMonth = [];
+    for (const month in payableByMonth) {
+      revenueByMonth.push({
+        month,
+        revenue: receivablesByMonth[month] - payableByMonth[month],
+      });
+    }
+
+    return revenueByMonth;
+  }
+
+  private handleWeeklyReport(
+    receivable: any,
+    payable: any,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    const reportReceivable = this.groupByTimePeriods(
+      receivable,
+      startDate,
+      endDate,
+    );
+
+    const reportPayable = this.groupByTimePeriods(payable, startDate, endDate);
+
+    const receivablesByMonth = reportReceivable.weeks;
+    const payableByMonth = reportPayable.weeks;
+
+    const revenueByMonth = [];
+    for (const month in payableByMonth) {
+      revenueByMonth.push({
+        month,
+        revenue: receivablesByMonth[month] - payableByMonth[month],
+      });
+    }
+
+    return revenueByMonth;
+  }
+
+  private handleDailyReport(
+    receivable: any,
+    payable: any,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    const reportReceivable = this.groupByTimePeriods(
+      receivable,
+      startDate,
+      endDate,
+    );
+
+    const reportPayable = this.groupByTimePeriods(payable, startDate, endDate);
+
+    const receivablesByMonth = reportReceivable.days;
+    const payableByMonth = reportPayable.days;
 
     const revenueByMonth = [];
     for (const month in payableByMonth) {
@@ -401,5 +470,65 @@ export class ReportService {
     });
 
     return months;
+  }
+
+  private groupByTimePeriods(data: any, startDate: Date, endDate: Date) {
+    // Convert start and end dates to Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Initialize objects for weekly and daily grouping
+    const weeks: any = {};
+    const days: any = {};
+
+    // Helper to add days to a date
+    const addDays = (date: Date, days: number) => {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    };
+
+    // Generate all dates between startDate and endDate
+    let currentDate = new Date(start);
+    while (currentDate <= end) {
+      // Format day as YYYY-MM-DD and set initial value to 0
+      const dayKey = currentDate.toISOString().split('T')[0];
+      days[dayKey] = 0;
+
+      // Get week number for the current date and set initial value to 0 for weeks
+      const weekNumber = this.getWeekNumber(currentDate);
+      const year = currentDate.getFullYear();
+      const weekKey = `Week ${weekNumber}, ${year}`;
+      weeks[weekKey] = 0;
+
+      // Move to the next day
+      currentDate = addDays(currentDate, 1);
+    }
+
+    // Now iterate over the data to populate actual paid amounts
+    data.forEach((item: any) => {
+      const date = new Date(item.accountPayable.dueDate);
+
+      // Check if the date is within the start and end range
+      if (date >= start && date <= end) {
+        // Group by Week
+        const weekNumber = this.getWeekNumber(date);
+        const year = date.getFullYear();
+        const weekKey = `Week ${weekNumber}, ${year}`;
+        weeks[weekKey] += item.paid;
+
+        // Group by Day
+        const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+        days[dayKey] += item.paid;
+      }
+    });
+
+    return { weeks, days };
+  }
+
+  private getWeekNumber(date: Date): number {
+    const startOfYear = new Date(date.getFullYear(), 0, 1);
+    const pastDaysOfYear = (date.getTime() - startOfYear.getTime()) / 86400000;
+    return Math.ceil((pastDaysOfYear + startOfYear.getDay() + 1) / 7);
   }
 }
