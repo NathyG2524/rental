@@ -47,6 +47,18 @@ export class ReportController {
     return await this.reportService.totalRevenue(type);
   }
 
+  @Get('receivable/:type')
+  @AllowAnonymous()
+  async receivableReport(@Param('type') type: string) {
+    return await this.reportService.receivableReport(type);
+  }
+
+  @Get('payable/:type')
+  @AllowAnonymous()
+  async payableReport(@Param('type') type: string) {
+    return await this.reportService.payableReport(type);
+  }
+
   @Get('employee/:employeeId')
   async basicEmployeeReport(@Param('employeeId') employeeId: string) {
     return await this.reportService.basicEmployeeReport(employeeId);

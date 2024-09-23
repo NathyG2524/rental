@@ -323,6 +323,76 @@ export class ReportService {
     }
   }
 
+  async receivableReport(type: string) {
+    const { from, to } = this.getDates(type);
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const receivable = await manager
+      .getRepository(AccountReceivableDetail)
+      .find({
+        where: {
+          accountReceivable: {
+            status: AccountReceivableStatusEnum.RECEIVED,
+            dueDate: Between(from, to),
+          },
+        },
+        select: {
+          paid: true,
+          accountReceivable: {
+            dueDate: true,
+          },
+        },
+        relations: {
+          accountReceivable: true,
+        },
+      });
+
+    if (type == 'annually') {
+      return this.groupByMonth(receivable);
+    } else if (type == 'weekly') {
+      const reportReceivable = this.groupByTimePeriods(receivable, from, to);
+
+      return reportReceivable.weeks;
+    } else if (type == 'daily') {
+      const reportReceivable = this.groupByTimePeriods(receivable, from, to);
+
+      return reportReceivable.days;
+    }
+  }
+
+  async payableReport(type: string) {
+    const { from, to } = this.getDates(type);
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const payable = await manager.getRepository(AccountPayableDetail).find({
+      where: {
+        accountPayable: {
+          status: AccountPayableStatusEnum.PAID,
+          dueDate: Between(from, to),
+        },
+      },
+      select: {
+        paid: true,
+        accountPayable: {
+          dueDate: true,
+        },
+      },
+      relations: {
+        accountPayable: true,
+      },
+    });
+
+    if (type == 'annually') {
+      return this.groupByMonth(payable);
+    } else if (type == 'weekly') {
+      const reportReceivable = this.groupByTimePeriods(payable, from, to);
+      return reportReceivable.weeks;
+    } else if (type == 'daily') {
+      const reportReceivable = this.groupByTimePeriods(payable, from, to);
+      return reportReceivable.days;
+    }
+  }
+
   private getDates(type: string) {
     const to = new Date();
     if (type === 'annually') {
