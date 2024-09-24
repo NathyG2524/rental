@@ -73,6 +73,18 @@ export class EmployeeService extends EntityCrudService<Employee> {
     return employee;
   }
 
+  async findOne(id: any) {
+    return await this.repositoryEmployee.findOne({
+      where: { id },
+      relations: { employeeAccount: true },
+      select: {
+        employeeAccount: {
+          permissions: true,
+        },
+      },
+    });
+  }
+
   async updateAccountPermission(input: UpdateAccountPermissionDto) {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
