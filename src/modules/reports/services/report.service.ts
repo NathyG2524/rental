@@ -349,10 +349,11 @@ export class ReportService {
     const revenueByMonth = [];
 
     if (type == 'annually') {
-      for (const month in receivable) {
+      const grouped = this.groupByMonth(receivable);
+      for (const month in grouped) {
         revenueByMonth.push({
           month,
-          revenue: receivable[month],
+          revenue: grouped[month],
         });
       }
     } else if (type == 'weekly') {
@@ -401,10 +402,11 @@ export class ReportService {
     const revenueByMonth = [];
 
     if (type == 'annually') {
-      for (const month in payable) {
+      const grouped = this.groupByMonth(payable);
+      for (const month in grouped) {
         revenueByMonth.push({
           month,
-          revenue: payable[month],
+          revenue: grouped[month],
         });
       }
     } else if (type == 'weekly') {
