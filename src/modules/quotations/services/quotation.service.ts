@@ -40,12 +40,12 @@ export class QuotationService extends EntityCrudService<Quotation> {
       manager.getRepository(Notification).insert({
         type: 'QuotationApprover',
         content: 'You have been assigned as Quotation Approver',
-        employeeId: itemData.approvedById,
+        employeeId: itemData.quotationApprovedById,
       }),
       manager.getRepository(Notification).insert({
         type: 'QuotationChecker',
         content: 'You have been assigned as Quotation Checker',
-        employeeId: itemData.checkedById,
+        employeeId: itemData.quotationCheckedById,
       }),
     ]);
 
