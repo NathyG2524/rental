@@ -346,18 +346,35 @@ export class ReportService {
           accountReceivable: true,
         },
       });
+    const revenueByMonth = [];
 
     if (type == 'annually') {
-      return this.groupByMonth(receivable);
+      for (const month in receivable) {
+        revenueByMonth.push({
+          month,
+          revenue: receivable[month],
+        });
+      }
     } else if (type == 'weekly') {
       const reportReceivable = this.groupByTimePeriods(receivable, from, to);
 
-      return reportReceivable.weeks;
+      for (const month in reportReceivable.weeks) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.weeks[month],
+        });
+      }
     } else if (type == 'daily') {
       const reportReceivable = this.groupByTimePeriods(receivable, from, to);
-
-      return reportReceivable.days;
+      for (const month in reportReceivable.days) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.days[month],
+        });
+      }
     }
+
+    return revenueByMonth;
   }
 
   async payableReport(type: string) {
@@ -381,16 +398,35 @@ export class ReportService {
         accountPayable: true,
       },
     });
+    const revenueByMonth = [];
 
     if (type == 'annually') {
-      return this.groupByMonth(payable);
+      for (const month in payable) {
+        revenueByMonth.push({
+          month,
+          revenue: payable[month],
+        });
+      }
     } else if (type == 'weekly') {
       const reportReceivable = this.groupByTimePeriods(payable, from, to);
-      return reportReceivable.weeks;
+
+      for (const month in reportReceivable.weeks) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.weeks[month],
+        });
+      }
     } else if (type == 'daily') {
       const reportReceivable = this.groupByTimePeriods(payable, from, to);
-      return reportReceivable.days;
+      for (const month in reportReceivable.days) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.days[month],
+        });
+      }
     }
+
+    return revenueByMonth;
   }
 
   private getDates(type: string) {
