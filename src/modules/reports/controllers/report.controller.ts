@@ -31,6 +31,15 @@ export class ReportController {
     return await this.reportService.projectReport(projectId);
   }
 
+  @Get('project-report/:projectId/:type')
+  @AllowAnonymous()
+  async aggregatedProjectReport(
+    @Param('projectId') projectId: string,
+    @Param('type') type: string,
+  ) {
+    return await this.reportService.aggregatedProjectReport(projectId, type);
+  }
+
   @Get('crm-report/')
   async crmReport() {
     return await this.reportService.crmReport();
