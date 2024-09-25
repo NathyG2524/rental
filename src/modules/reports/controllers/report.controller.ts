@@ -26,6 +26,11 @@ export class ReportController {
     return await this.reportService.quotationReport(quotationId);
   }
 
+  @Get('project-report/:projectId')
+  async projectReport(@Param('projectId') projectId: string) {
+    return await this.reportService.projectReport(projectId);
+  }
+
   @Get('crm-report/')
   async crmReport() {
     return await this.reportService.crmReport();

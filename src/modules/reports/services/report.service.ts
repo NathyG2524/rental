@@ -171,6 +171,43 @@ export class ReportService {
     };
   }
 
+  async projectReport(projectId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const [accountReceivableDetail, completedProjectTask, totalEmployee] =
+      await Promise.all([
+        manager.getRepository(AccountReceivableDetail).find({
+          where: {
+            id: projectId,
+          },
+        }),
+        manager.getRepository(ProjectTask).count({
+          where: {
+            projectId,
+            status: 'Done',
+          },
+        }),
+        manager.getRepository(Employee).count({
+          where: {
+            assignedEmployees: {
+              projectId,
+            },
+          },
+        }),
+      ]);
+
+    const fullPayment = accountReceivableDetail?.reduce(
+      (a, b) => a + b.paid,
+      0,
+    );
+
+    return {
+      fullPayment,
+      completedProjectTask,
+      totalEmployee,
+    };
+  }
+
   async crmReport() {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
