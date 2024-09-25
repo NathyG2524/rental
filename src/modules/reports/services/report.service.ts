@@ -178,6 +178,7 @@ export class ReportService {
       await Promise.all([
         manager.getRepository(AccountReceivableDetail).find({
           where: {
+            // projectId: projectId,
             id: projectId,
           },
         }),
@@ -305,18 +306,18 @@ export class ReportService {
         },
         select: {
           paid: true,
-          project: {
-            client: {
-              id: true,
-              name: true,
-            },
-          },
+          // project: {
+          //   client: {
+          //     id: true,
+          //     name: true,
+          //   },
+          // },
         },
-        relations: {
-          project: {
-            client: true,
-          },
-        },
+        // relations: {
+        //   project: {
+        //     client: true,
+        //   },
+        // },
       }),
       manager.getRepository(AccountPayableDetail).find({
         where: {

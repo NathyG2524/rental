@@ -1,14 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateAccountReceivableDetailDto {
   @ApiProperty()
-  @IsString()
-  name: string;
-
-  @ApiProperty()
-  @IsNumber()
-  unit: number;
+  @IsDateString()
+  dueDate: Date;
 
   @ApiProperty()
   @IsNumber()
