@@ -259,6 +259,51 @@ export class ReportService {
     return revenueByMonth;
   }
 
+  async aggregatedVendorReport(vendorId: string, type: string) {
+    const { from, to } = this.getDates(type);
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const project = await manager.getRepository(AccountPayableDetail).find({
+      where: {
+        vendorId,
+        // status: 'Done',
+      },
+      relations: {
+        accountPayable: true,
+      },
+    });
+    const revenueByMonth = [];
+
+    if (type == 'annually') {
+      const grouped = this.groupByMonth(project);
+      for (const month in grouped) {
+        revenueByMonth.push({
+          month,
+          revenue: grouped[month],
+        });
+      }
+    } else if (type == 'weekly') {
+      const reportReceivable = this.groupByTimePeriods(project, from, to);
+
+      for (const month in reportReceivable.weeks) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.weeks[month],
+        });
+      }
+    } else if (type == 'daily') {
+      const reportReceivable = this.groupByTimePeriods(project, from, to);
+      for (const month in reportReceivable.days) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.days[month],
+        });
+      }
+    }
+
+    return revenueByMonth;
+  }
+
   async crmReport() {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
@@ -690,6 +735,39 @@ export class ReportService {
       const month = new Date(item.dueDate).toLocaleString('default', {
         month: 'short',
       });
+
+      // Add the paid amount to the respective month
+      months[month] += 1;
+    });
+
+    return months;
+  }
+
+  private groupByMonthVendor(data: any) {
+    // Initialize all months with 0
+    const months = {
+      Jan: 0,
+      Feb: 0,
+      Mar: 0,
+      Apr: 0,
+      May: 0,
+      Jun: 0,
+      Jul: 0,
+      Aug: 0,
+      Sep: 0,
+      Oct: 0,
+      Nov: 0,
+      Dec: 0,
+    };
+
+    data.forEach((item: any) => {
+      // Extract the month from the dueDate
+      const month = new Date(item.accountPayable.dueDate).toLocaleString(
+        'default',
+        {
+          month: 'short',
+        },
+      );
 
       // Add the paid amount to the respective month
       months[month] += 1;
