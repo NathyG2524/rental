@@ -49,6 +49,12 @@ export class ReportController {
     return await this.reportService.aggregatedVendorReport(vendorId, type);
   }
 
+  @Get('operation-cost-report/:type')
+  @AllowAnonymous()
+  async operationCostReport(@Param('type') type: string) {
+    return await this.reportService.operationCostReport(type);
+  }
+
   @Get('crm-report/')
   async crmReport() {
     return await this.reportService.crmReport();

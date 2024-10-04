@@ -7,6 +7,7 @@ import {
   Client,
   Employee,
   EmployeeLeaveRequest,
+  OperatingCost,
   Project,
   ProjectTask,
   Vendor,
@@ -345,7 +346,7 @@ export class ReportService {
       manager.getRepository(AccountReceivableDetail).find({
         where: {
           accountReceivable: {
-            status: AccountReceivableStatusEnum.RECEIVED,
+            // status: AccountReceivableStatusEnum.RECEIVED,
             dueDate: Between(from, to),
           },
         },
@@ -465,7 +466,7 @@ export class ReportService {
       .find({
         where: {
           accountReceivable: {
-            status: AccountReceivableStatusEnum.RECEIVED,
+            // status: AccountReceivableStatusEnum.RECEIVED,
             dueDate: Between(from, to),
           },
         },
@@ -553,6 +554,56 @@ export class ReportService {
       }
     } else if (type == 'daily') {
       const reportReceivable = this.groupByTimePeriods(payable, from, to);
+      for (const month in reportReceivable.days) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.days[month],
+        });
+      }
+    }
+
+    return revenueByMonth;
+  }
+
+  async operationCostReport(type: string) {
+    const { from, to } = this.getDates(type);
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const operationCosts = await manager.getRepository(OperatingCost).find({
+      where: {
+        createdAt: Between(from, to),
+      },
+    });
+
+    const revenueByMonth = [];
+
+    if (type == 'annually') {
+      const grouped = this.groupByMonthOperationCost(operationCosts);
+      for (const month in grouped) {
+        revenueByMonth.push({
+          month,
+          revenue: grouped[month],
+        });
+      }
+    } else if (type == 'weekly') {
+      const reportReceivable = this.groupByTimePeriodsOperationCost(
+        operationCosts,
+        from,
+        to,
+      );
+
+      for (const month in reportReceivable.weeks) {
+        revenueByMonth.push({
+          month,
+          revenue: reportReceivable.weeks[month],
+        });
+      }
+    } else if (type == 'daily') {
+      const reportReceivable = this.groupByTimePeriodsOperationCost(
+        operationCosts,
+        from,
+        to,
+      );
       for (const month in reportReceivable.days) {
         revenueByMonth.push({
           month,
@@ -743,7 +794,7 @@ export class ReportService {
     return months;
   }
 
-  private groupByMonthVendor(data: any) {
+  private groupByMonthOperationCost(data: any) {
     // Initialize all months with 0
     const months = {
       Jan: 0,
@@ -762,15 +813,12 @@ export class ReportService {
 
     data.forEach((item: any) => {
       // Extract the month from the dueDate
-      const month = new Date(item.accountPayable.dueDate).toLocaleString(
-        'default',
-        {
-          month: 'short',
-        },
-      );
+      const month = new Date(item.createdAt).toLocaleString('default', {
+        month: 'short',
+      });
 
       // Add the paid amount to the respective month
-      months[month] += 1;
+      months[month] += item.spendingAmount;
     });
 
     return months;
@@ -878,6 +926,64 @@ export class ReportService {
         // Group by Day
         const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
         days[dayKey] += 1;
+      }
+    });
+
+    return { weeks, days };
+  }
+
+  private groupByTimePeriodsOperationCost(
+    data: any,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    // Convert start and end dates to Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Initialize objects for weekly and daily grouping
+    const weeks: any = {};
+    const days: any = {};
+
+    // Helper to add days to a date
+    const addDays = (date: Date, days: number) => {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    };
+
+    // Generate all dates between startDate and endDate
+    let currentDate = new Date(start);
+    while (currentDate <= end) {
+      // Format day as YYYY-MM-DD and set initial value to 0
+      const dayKey = currentDate.toISOString().split('T')[0];
+      days[dayKey] = 0;
+
+      // Get week number for the current date and set initial value to 0 for weeks
+      const weekNumber = this.getWeekNumber(currentDate);
+      const year = currentDate.getFullYear();
+      const weekKey = `Week ${weekNumber}, ${year}`;
+      weeks[weekKey] = 0;
+
+      // Move to the next day
+      currentDate = addDays(currentDate, 1);
+    }
+
+    // Now iterate over the data to populate actual paid amounts
+    data.forEach((item: any) => {
+      const date = new Date(item.dueDate);
+
+      // Check if the date is within the start and end range
+      if (date >= start && date <= end) {
+        // Group by Week
+        const weekNumber = this.getWeekNumber(date);
+        const year = date.getFullYear();
+        const weekKey = `Week ${weekNumber}, ${year}`;
+        weeks[weekKey] += item.spendingAmount;
+
+        // Group by Day
+        const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+        days[dayKey] += item.spendingAmount;
       }
     });
 
