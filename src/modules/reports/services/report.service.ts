@@ -752,7 +752,7 @@ export class ReportService {
 
     data.forEach((item: any) => {
       // Extract the month from the dueDate
-      const month = new Date(item.accountPayable.dueDate).toLocaleString(
+      const month = new Date(item.accountReceivable.dueDate).toLocaleString(
         'default',
         { month: 'short' },
       );
