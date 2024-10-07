@@ -92,4 +92,10 @@ export class ReportController {
   async basicEmployeeReport(@Param('employeeId') employeeId: string) {
     return await this.reportService.basicEmployeeReport(employeeId);
   }
+
+  @Get('social-media-report')
+  @AllowAnonymous()
+  async socialMediaReport() {
+    return await this.reportService.socialMediaReport();
+  }
 }

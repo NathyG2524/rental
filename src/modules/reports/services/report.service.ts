@@ -10,6 +10,7 @@ import {
   OperatingCost,
   Project,
   ProjectTask,
+  SocialMedia,
   Vendor,
 } from 'src/entities';
 import {
@@ -613,6 +614,31 @@ export class ReportService {
     }
 
     return revenueByMonth;
+  }
+
+  async socialMediaReport() {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+    const socialMedias = await manager.getRepository(SocialMedia).find({
+      select: {
+        followers: true,
+        posts: true,
+      },
+    });
+
+    return socialMedias.reduce((acc: any, curr: SocialMedia) => {
+      if (acc['posts']) {
+        acc['posts'] += curr.posts;
+      } else {
+        acc['posts'] = curr.posts;
+      }
+
+      if (acc['followers']) {
+        acc['followers'] += curr.followers;
+      } else {
+        acc['followers'] = curr.followers;
+      }
+      return acc;
+    }, {});
   }
 
   private getDates(type: string) {
