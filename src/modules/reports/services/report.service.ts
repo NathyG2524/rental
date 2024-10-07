@@ -483,7 +483,7 @@ export class ReportService {
     const revenueByMonth = [];
 
     if (type == 'annually') {
-      const grouped = this.groupByMonth(receivable);
+      const grouped = this.groupByMonthRecivable(receivable);
       for (const month in grouped) {
         revenueByMonth.push({
           month,
@@ -647,7 +647,7 @@ export class ReportService {
   }
 
   private handleMonthlyReport(receivable: any, payable: any) {
-    const receivablesByMonth = this.groupByMonth(receivable);
+    const receivablesByMonth = this.groupByMonthRecivable(receivable);
     const payableByMonth = this.groupByMonth(payable);
 
     const revenueByMonth = [];
@@ -734,6 +734,37 @@ export class ReportService {
   }
 
   private groupByMonth(data: any) {
+    // Initialize all months with 0
+    const months = {
+      Jan: 0,
+      Feb: 0,
+      Mar: 0,
+      Apr: 0,
+      May: 0,
+      Jun: 0,
+      Jul: 0,
+      Aug: 0,
+      Sep: 0,
+      Oct: 0,
+      Nov: 0,
+      Dec: 0,
+    };
+
+    data.forEach((item: any) => {
+      // Extract the month from the dueDate
+      const month = new Date(item.accountPayable.dueDate).toLocaleString(
+        'default',
+        { month: 'short' },
+      );
+
+      // Add the paid amount to the respective month
+      months[month] += item.paid;
+    });
+
+    return months;
+  }
+
+  private groupByMonthRecivable(data: any) {
     // Initialize all months with 0
     const months = {
       Jan: 0,
