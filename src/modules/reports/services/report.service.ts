@@ -492,7 +492,7 @@ export class ReportService {
         });
       }
     } else if (type == 'weekly') {
-      const reportReceivable = this.groupByTimePeriods(receivable, from, to);
+      const reportReceivable = this.groupByTimePeriodsReceivable(receivable, from, to);
 
       for (const month in reportReceivable.weeks) {
         revenueByMonth.push({
@@ -501,7 +501,7 @@ export class ReportService {
         });
       }
     } else if (type == 'daily') {
-      const reportReceivable = this.groupByTimePeriods(receivable, from, to);
+      const reportReceivable = this.groupByTimePeriodsReceivable(receivable, from, to);
       for (const month in reportReceivable.days) {
         revenueByMonth.push({
           month,
@@ -879,6 +879,60 @@ export class ReportService {
     });
 
     return months;
+  }
+
+  private groupByTimePeriodsReceivable(data: any, startDate: Date, endDate: Date) {
+    // Convert start and end dates to Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Initialize objects for weekly and daily grouping
+    const weeks: any = {};
+    const days: any = {};
+
+    // Helper to add days to a date
+    const addDays = (date: Date, days: number) => {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    };
+
+    // Generate all dates between startDate and endDate
+    let currentDate = new Date(start);
+    while (currentDate <= end) {
+      // Format day as YYYY-MM-DD and set initial value to 0
+      const dayKey = currentDate.toISOString().split('T')[0];
+      days[dayKey] = 0;
+
+      // Get week number for the current date and set initial value to 0 for weeks
+      const weekNumber = this.getWeekNumber(currentDate);
+      const year = currentDate.getFullYear();
+      const weekKey = `Week ${weekNumber}, ${year}`;
+      weeks[weekKey] = 0;
+
+      // Move to the next day
+      currentDate = addDays(currentDate, 1);
+    }
+
+    // Now iterate over the data to populate actual paid amounts
+    data.forEach((item: any) => {
+      const date = new Date(item.accountReceivable.dueDate);
+
+      // Check if the date is within the start and end range
+      if (date >= start && date <= end) {
+        // Group by Week
+        const weekNumber = this.getWeekNumber(date);
+        const year = date.getFullYear();
+        const weekKey = `Week ${weekNumber}, ${year}`;
+        weeks[weekKey] += item.paid;
+
+        // Group by Day
+        const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+        days[dayKey] += item.paid;
+      }
+    });
+
+    return { weeks, days };
   }
 
   private groupByTimePeriods(data: any, startDate: Date, endDate: Date) {
