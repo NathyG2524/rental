@@ -19,6 +19,7 @@ import { ExpenseModule } from './modules/expenses/expense.module';
 import { EventListModule } from './modules/event-lists/event-list.module';
 import { ReportModule } from './modules/reports/report.module';
 import { NotificationModule } from './modules/notifications/notification.module';
+import { ExchangeModule } from './modules/exchange/exchange.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { NotificationModule } from './modules/notifications/notification.module'
     EventListModule,
     ReportModule,
     NotificationModule,
+    ExchangeModule,
   ],
   controllers: [],
   providers: [
