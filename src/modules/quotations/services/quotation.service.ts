@@ -103,7 +103,7 @@ export class QuotationService extends EntityCrudService<Quotation> {
 
   async updateStatusToCheck(id: string, user: any) {
     let item;
-    if(user.permissions.includes('ALL') || user.permission.includes('Admin')){
+    if(user.permissions.includes('ALL') || user.permissions.includes('Admin')){
       item = await this.repositoryQuotation.findOneBy({
         id,
       });
