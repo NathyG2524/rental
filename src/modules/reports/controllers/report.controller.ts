@@ -88,7 +88,7 @@ export class ReportController {
     return await this.reportService.payableReport(type);
   }
 
-  @Get('stared-project/:type')
+  @Get('started-project/:type')
   @AllowAnonymous()
   async startedProjectReport(@Param('type') type: string) {
     return await this.reportService.startedProjectReport(type);
