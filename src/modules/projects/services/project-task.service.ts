@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { Inject, Injectable } from '@nestjs/common';
 import { ExtraCrudService } from 'src/shared/service';
-import { Notification, ProjectTask } from 'src/entities';
+import { Notification, Project, ProjectTask } from 'src/entities';
 import { REQUEST } from '@nestjs/core';
 import { CreateProjectTaskDto } from '../dtos/project-task.dto';
 import { ENTITY_MANAGER_KEY } from 'src/shared/interceptors';
@@ -34,5 +34,27 @@ export class ProjectTaskService extends ExtraCrudService<ProjectTask> {
         employeeId: itemData.assignedReviewerId,
       }),
     ]);
+  }
+
+  async taskPerEmployee(status: any, assignedEmployeeId: string ) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+    return await manager.getRepository(ProjectTask).count({
+      where: {
+        status,
+        assignedEmployeeId,
+      }
+    })
+  }
+  
+  async projectPerEmployee(status: any, assignedEmployeeId: string ) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+    return await manager.getRepository(Project).count({
+      where: {
+        projectTasks:{
+          status,
+          assignedEmployeeId,
+        }
+      }
+    })
   }
 }
