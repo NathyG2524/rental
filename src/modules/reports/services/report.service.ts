@@ -601,18 +601,19 @@ export class ReportService {
 
     return projectByMonth;
   }
-  async employeeProjectReport(type: string, status: string, assignedEmployeeId: string) {
+  async departmentProjectReport(type: string, departmentId) {
     const { from, to } = this.getDates(type);
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
-    const project = await manager.getRepository(Project).find({
-      where: {
-        projectTasks:{
-          assignedEmployeeId,
-          status
-        }
-      }
-    });
+    const project = await manager.getRepository(Project).find(
+      // {
+      // where: {
+      //   projectTasks:{
+      //     d
+      //   }
+      // }
+    // }
+  );
     const projectByMonth = [];
 
     if (type == 'annually') {
@@ -638,6 +639,59 @@ export class ReportService {
         projectByMonth.push({
           month,
           revenue: reportProject.days[month],
+        });
+      }
+    }
+
+    return projectByMonth;
+  }
+  async employeeProjectReport(type: string, status: string, assignedEmployeeId: string) {
+    const { from, to } = this.getDates(type);
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    // const project = await manager.getRepository(Project).find({
+    //   where: {
+    //     projectTasks:{
+    //       assignedEmployeeId,
+    //       status
+    //     }
+    //   }
+    // });
+
+    const project = await manager.getRepository(Project)
+    .createQueryBuilder('project')
+    .leftJoinAndSelect('project.projectTasks', 'tasks')
+    .groupBy('project.id, tasks.createdAt, tasks.updatedAt, tasks.id') // Group by the parent entity
+    .having('COUNT(*) = SUM(CASE WHEN tasks.status = :status AND tasks.assignedEmployeeId = :assignedEmployeeId THEN 1 ELSE 0 END)', {
+      assignedEmployeeId,
+            status
+    })
+    .getMany();
+    const projectByMonth = [];
+
+    if (type == 'annually') {
+      const grouped = this.groupProjectByStartDate(project);
+      for (const month in grouped) {
+        projectByMonth.push({
+          month,
+          project: grouped[month],
+        });
+      }
+    } else if (type == 'weekly') {
+      const reportProject = this.groupProjectByTimePeriods(project, from, to);
+
+      for (const month in reportProject.weeks) {
+        projectByMonth.push({
+          month,
+          project: reportProject.weeks[month],
+        });
+      }
+    } else if (type == 'daily') {
+      const reportProject = this.groupProjectByTimePeriods(project, from, to);
+      for (const month in reportProject.days) {
+        projectByMonth.push({
+          month,
+          project: reportProject.days[month],
         });
       }
     }

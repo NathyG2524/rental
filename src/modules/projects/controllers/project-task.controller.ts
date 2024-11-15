@@ -36,4 +36,11 @@ export class ProjectTaskController extends ExtraCrudController<ProjectTask>(
   ){
     return await this.projectTeamService.projectPerEmployee(status, employeeId)
   }
+
+  @Get('total-project-per-employee/:employeeId')
+  async totalProjectPerEmploye(
+    @Param('employeeId') employeeId: string,
+  ){
+    return await this.projectTeamService.totalProjectPerEmployee(employeeId)
+  }
 }

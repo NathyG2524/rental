@@ -57,4 +57,14 @@ export class ProjectTaskService extends ExtraCrudService<ProjectTask> {
       }
     })
   }
+  async totalProjectPerEmployee( assignedEmployeeId: string ) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+    return await manager.getRepository(Project).count({
+      where: {
+        projectTasks:{
+          assignedEmployeeId,
+        }
+      }
+    })
+  }
 }
