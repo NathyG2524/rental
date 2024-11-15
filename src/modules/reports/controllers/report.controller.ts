@@ -94,6 +94,16 @@ export class ReportController {
     return await this.reportService.startedProjectReport(type);
   }
 
+  @Get('employee-project/:type/:status/:employeeId')
+  @AllowAnonymous()
+  async employeeProjectReport(
+    @Param('type') type: string,
+    @Param('status') status: string,
+    @Param('employeeId') employeeId: string,
+  ) {
+    return await this.reportService.employeeProjectReport(type, status, employeeId);
+  }
+
   @Get('employee/:employeeId')
   async basicEmployeeReport(@Param('employeeId') employeeId: string) {
     return await this.reportService.basicEmployeeReport(employeeId);

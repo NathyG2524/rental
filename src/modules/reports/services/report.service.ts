@@ -601,6 +601,49 @@ export class ReportService {
 
     return projectByMonth;
   }
+  async employeeProjectReport(type: string, status: string, assignedEmployeeId: string) {
+    const { from, to } = this.getDates(type);
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const project = await manager.getRepository(Project).find({
+      where: {
+        projectTasks:{
+          assignedEmployeeId,
+          status
+        }
+      }
+    });
+    const projectByMonth = [];
+
+    if (type == 'annually') {
+      const grouped = this.groupProjectByStartDate(project);
+      for (const month in grouped) {
+        projectByMonth.push({
+          month,
+          project: grouped[month],
+        });
+      }
+    } else if (type == 'weekly') {
+      const reportProject = this.groupProjectByTimePeriods(project, from, to);
+
+      for (const month in reportProject.weeks) {
+        projectByMonth.push({
+          month,
+          revenue: reportProject.weeks[month],
+        });
+      }
+    } else if (type == 'daily') {
+      const reportProject = this.groupProjectByTimePeriods(project, from, to);
+      for (const month in reportProject.days) {
+        projectByMonth.push({
+          month,
+          revenue: reportProject.days[month],
+        });
+      }
+    }
+
+    return projectByMonth;
+  }
 
   async operationCostReport(type: string) {
     const { from, to } = this.getDates(type);
