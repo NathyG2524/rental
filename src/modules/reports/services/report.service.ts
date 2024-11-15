@@ -565,6 +565,42 @@ export class ReportService {
 
     return revenueByMonth;
   }
+  async startedProjectReport(type: string) {
+    const { from, to } = this.getDates(type);
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const project = await manager.getRepository(Project).find();
+    const projectByMonth = [];
+
+    if (type == 'annually') {
+      const grouped = this.groupProjectByStartDate(project);
+      for (const month in grouped) {
+        projectByMonth.push({
+          month,
+          project: grouped[month],
+        });
+      }
+    } else if (type == 'weekly') {
+      const reportProject = this.groupProjectByTimePeriods(project, from, to);
+
+      for (const month in reportProject.weeks) {
+        projectByMonth.push({
+          month,
+          revenue: reportProject.weeks[month],
+        });
+      }
+    } else if (type == 'daily') {
+      const reportProject = this.groupProjectByTimePeriods(project, from, to);
+      for (const month in reportProject.days) {
+        projectByMonth.push({
+          month,
+          revenue: reportProject.days[month],
+        });
+      }
+    }
+
+    return projectByMonth;
+  }
 
   async operationCostReport(type: string) {
     const { from, to } = this.getDates(type);
@@ -850,6 +886,35 @@ export class ReportService {
 
     return months;
   }
+  private groupProjectByStartDate(data: any) {
+    // Initialize all months with 0
+    const months = {
+      Jan: 0,
+      Feb: 0,
+      Mar: 0,
+      Apr: 0,
+      May: 0,
+      Jun: 0,
+      Jul: 0,
+      Aug: 0,
+      Sep: 0,
+      Oct: 0,
+      Nov: 0,
+      Dec: 0,
+    };
+
+    data.forEach((item: any) => {
+      // Extract the month from the dueDate
+      const month = new Date(item.startDate).toLocaleString('default', {
+        month: 'short',
+      });
+
+      // Add the paid amount to the respective month
+      months[month] += 1;
+    });
+
+    return months;
+  }
 
   private groupByMonthOperationCost(data: any) {
     // Initialize all months with 0
@@ -983,6 +1048,59 @@ export class ReportService {
         // Group by Day
         const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
         days[dayKey] += item.paid;
+      }
+    });
+
+    return { weeks, days };
+  }
+  private groupProjectByTimePeriods(data: any, startDate: Date, endDate: Date) {
+    // Convert start and end dates to Date objects
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // Initialize objects for weekly and daily grouping
+    const weeks: any = {};
+    const days: any = {};
+
+    // Helper to add days to a date
+    const addDays = (date: Date, days: number) => {
+      const result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    };
+
+    // Generate all dates between startDate and endDate
+    let currentDate = new Date(start);
+    while (currentDate <= end) {
+      // Format day as YYYY-MM-DD and set initial value to 0
+      const dayKey = currentDate.toISOString().split('T')[0];
+      days[dayKey] = 0;
+
+      // Get week number for the current date and set initial value to 0 for weeks
+      const weekNumber = this.getWeekNumber(currentDate);
+      const year = currentDate.getFullYear();
+      const weekKey = `Week ${weekNumber}, ${year}`;
+      weeks[weekKey] = 0;
+
+      // Move to the next day
+      currentDate = addDays(currentDate, 1);
+    }
+
+    // Now iterate over the data to populate actual paid amounts
+    data.forEach((item: any) => {
+      const date = new Date(item.startDate);
+
+      // Check if the date is within the start and end range
+      if (date >= start && date <= end) {
+        // Group by Week
+        const weekNumber = this.getWeekNumber(date);
+        const year = date.getFullYear();
+        const weekKey = `Week ${weekNumber}, ${year}`;
+        weeks[weekKey] += 1;
+
+        // Group by Day
+        const dayKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+        days[dayKey] += 1;
       }
     });
 
