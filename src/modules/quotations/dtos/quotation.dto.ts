@@ -21,11 +21,11 @@ export class CreateQuotationDto {
 
   @ApiProperty()
   @IsString()
-  approvedById: string;
+  quotationApprovedById: string;
 
   @ApiProperty()
   @IsString()
-  checkedById: string;
+  quotationCheckedById: string;
 
   @ApiProperty()
   @IsString()

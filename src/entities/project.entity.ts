@@ -15,7 +15,7 @@ import { QuotationItem } from './quotation-item.entity';
 import { Quotation } from './quotation.entity';
 import { InvoiceItem } from './invoice-item.entity';
 import { AccountPayableDetail } from './account-payable-detail.entity';
-import { AccountReceivableDetail } from './account-receivable-detail.entity';
+// import { AccountReceivableDetail } from './account-receivable-detail.entity';
 
 @Entity({ name: 'projects' })
 export class Project extends BaseEntity {
@@ -89,13 +89,13 @@ export class Project extends BaseEntity {
   )
   accountPayableDetails: AccountPayableDetail[];
 
-  @OneToMany(
-    () => AccountReceivableDetail,
-    (operatingCosts) => operatingCosts.project,
-    {
-      cascade: true,
-      onDelete: 'RESTRICT',
-    },
-  )
-  accountReceivableDetails: AccountReceivableDetail[];
+  // @OneToMany(
+  //   () => AccountReceivableDetail,
+  //   (operatingCosts) => operatingCosts.project,
+  //   {
+  //     cascade: true,
+  //     onDelete: 'RESTRICT',
+  //   },
+  // )
+  // accountReceivableDetails: AccountReceivableDetail[];
 }

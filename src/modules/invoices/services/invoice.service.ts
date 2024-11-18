@@ -99,7 +99,10 @@ export class InvoiceService extends EntityCrudService<Invoice> {
       reference: 'AR' + Math.floor(100000 + Math.random() * 900000),
       status: AccountReceivableStatusEnum.NOT_RECEIVED,
       invoiceId: invoice.id,
-      accountReceivableDetails: invoiceItems,
+      accountReceivableDetails: {
+        ...invoiceItems,
+        dueDate: quotation.dueDate,
+      } as any,
     });
 
     const accountPayable = manager.getRepository(AccountPayable).create({

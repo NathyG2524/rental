@@ -27,7 +27,7 @@ export class Department extends BaseEntity {
   })
   permissions: string[];
 
-  @Column()
+  @Column({ nullable: true })
   responsiblePersonId: string;
 
   @OneToOne(() => Employee, (employee) => employee.departmentResponsiblePerson)

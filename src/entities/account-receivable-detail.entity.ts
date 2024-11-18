@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from './base-entity';
 import { AccountReceivable } from './account-receivable.entity';
-import { Project } from './project.entity';
+// import { Project } from './project.entity';
 import { ColumnNumericTransformer } from 'src/shared/utils/numeric.transformer';
 
 @Entity({ name: 'account_receivable_details' })
@@ -16,10 +16,7 @@ export class AccountReceivableDetail extends BaseEntity {
   id: string;
 
   @Column()
-  name: string;
-
-  @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
-  unit: number;
+  dueDate: Date;
 
   @Column({ type: 'numeric', transformer: new ColumnNumericTransformer() })
   amount: number;
@@ -31,20 +28,12 @@ export class AccountReceivableDetail extends BaseEntity {
   })
   paid: number;
 
-  @Column({
-    type: 'numeric',
-    transformer: new ColumnNumericTransformer(),
-    nullable: true,
-  })
-  days: number;
+  // @Column()
+  // projectId: string;
 
-  @Column()
-  projectId: string;
-
-  @ManyToOne(() => Project, (project) => project.accountReceivableDetails)
-  @JoinColumn({ name: 'projectId' })
-  project: Project;
-
+  // @ManyToOne(() => Project, (project) => project.accountReceivableDetails)
+  // @JoinColumn({ name: 'projectId' })
+  // project: Project;
   @Column()
   accountReceivableId: string;
 
