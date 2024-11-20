@@ -43,13 +43,21 @@ export class ProjectController extends ExtraCrudController<Project>(options) {
   @AllowAnonymous()
   async projectsPerEmployee(
     @Param('assignedEmployeeId') assignedEmployeeId: string,
+    @Query('q') q: string,
   ) {
-    return await this.projectService.projectsPerEmployee(assignedEmployeeId);
+    const query = decodeCollectionQuery(q);
+    return await this.projectService.projectsPerEmployee(
+      assignedEmployeeId,
+      query,
+    );
   }
 
   @Get('department/:departmentId')
-  @AllowAnonymous()
-  async projectsPerDepartment(@Param('departmentId') departmentId: string) {
-    return await this.projectService.projectsPerDepartment(departmentId);
+  async projectsPerDepartment(
+    @Param('departmentId') departmentId: string,
+    @Query('q') q: string,
+  ) {
+    const query = decodeCollectionQuery(q);
+    return await this.projectService.projectsPerDepartment(departmentId, query);
   }
 }

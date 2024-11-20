@@ -675,10 +675,11 @@ export class ReportService {
     const project = await manager
       .getRepository(Project)
       .createQueryBuilder('project')
-      .leftJoinAndSelect('project.projectTasks', 'tasks')
-      .groupBy('project.id, tasks.createdAt, tasks.updatedAt, tasks.id') // Group by the parent entity
+      .leftJoin('projects.projectTasks', 'tasks')
+      .groupBy('projects.id, projects.createdAt, projects.updatedAt') // Group by the parent entity
       .having(
-        'COUNT(*) = SUM(CASE WHEN tasks.status = :status AND tasks.assignedEmployeeId = :assignedEmployeeId THEN 1 ELSE 0 END)',
+        'COUNT(*) = SUM(CASE WHEN tasks.assignedEmployeeId = :assignedEmployeeId AND tasks.status = :status THEN 1 ELSE 0 END) ' +
+          'AND SUM(CASE WHEN tasks.status = :status AND tasks.assignedEmployeeId = :assignedEmployeeId THEN 1 ELSE 0 END) > 0',
         {
           assignedEmployeeId,
           status,
