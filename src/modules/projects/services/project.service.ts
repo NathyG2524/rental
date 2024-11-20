@@ -1,16 +1,21 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { EntityManager, Repository } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import { ExtraCrudService } from 'src/shared/service';
 import { Project } from 'src/entities';
 import { CollectionQuery, QueryConstructor } from 'src/shared/collection-query';
 import { DataResponseFormat } from 'src/shared/api-data';
+import { ENTITY_MANAGER_KEY } from 'src/shared/interceptors';
+import { REQUEST } from '@nestjs/core';
 
 @Injectable()
 export class ProjectService extends ExtraCrudService<Project> {
   constructor(
     @InjectRepository(Project)
     private readonly repositoryProject: Repository<Project>,
+
+    @Inject(REQUEST)
+    private readonly request: Request,
   ) {
     super(repositoryProject);
   }
@@ -42,5 +47,43 @@ export class ProjectService extends ExtraCrudService<Project> {
       response.items = result;
     }
     return response;
+  }
+
+  async projectsPerEmployee(assignedEmployeeId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const projects = await manager
+      .getRepository(Project)
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.projectTasks', 'tasks')
+      .groupBy('project.id, tasks.createdAt, tasks.updatedAt, tasks.id') // Group by the parent entity
+      .having(
+        'COUNT(*) = SUM(CASE WHEN tasks.status = :status AND tasks.assignedEmployeeId = :assignedEmployeeId THEN 1 ELSE 0 END)',
+        {
+          assignedEmployeeId,
+          status: 'Done',
+        },
+      )
+      .getManyAndCount();
+      return projects;
+  }
+  async projectsPerDepartment(departmentId: string) {
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+
+    const projects = await manager
+      .getRepository(Project)
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.projectTasks', 'tasks')
+      .leftJoinAndSelect('tasks.departmentTeam', 'departmentTeam')
+      .groupBy('project.id, tasks.createdAt, tasks.updatedAt, tasks.id') // Group by the parent entity
+      .having(
+        'COUNT(*) = SUM(CASE WHEN tasks.status = :status AND departmentTeam.departmentId = :departmentId THEN 1 ELSE 0 END)',
+        {
+          departmentId,
+          status: 'Done',
+        },
+      )
+      .getManyAndCount();
+      return projects;
   }
 }

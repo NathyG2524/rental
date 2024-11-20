@@ -25,22 +25,20 @@ export class ProjectTaskController extends ExtraCrudController<ProjectTask>(
   async taskPerEmploye(
     @Param('status') status: string,
     @Param('employeeId') employeeId: string,
-  ){
-    return await this.projectTeamService.taskPerEmployee(status, employeeId)
+  ) {
+    return await this.projectTeamService.taskPerEmployee(status, employeeId);
   }
 
   @Get('project-per-employee/:status/:employeeId')
   async projectPerEmploye(
     @Param('status') status: string,
     @Param('employeeId') employeeId: string,
-  ){
-    return await this.projectTeamService.projectPerEmployee(status, employeeId)
+  ) {
+    return await this.projectTeamService.projectPerEmployee(status, employeeId);
   }
 
   @Get('total-project-per-employee/:employeeId')
-  async totalProjectPerEmploye(
-    @Param('employeeId') employeeId: string,
-  ){
-    return await this.projectTeamService.totalProjectPerEmployee(employeeId)
+  async totalProjectPerEmploye(@Param('employeeId') employeeId: string) {
+    return await this.projectTeamService.totalProjectPerEmployee(employeeId);
   }
 }

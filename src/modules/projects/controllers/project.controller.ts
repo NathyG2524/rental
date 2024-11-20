@@ -38,4 +38,18 @@ export class ProjectController extends ExtraCrudController<Project>(options) {
     const query = decodeCollectionQuery(q);
     return this.projectService.fetchAll(query);
   }
+
+  @Get('employee/:assignedEmployeeId')
+  @AllowAnonymous()
+  async projectsPerEmployee(
+    @Param('assignedEmployeeId') assignedEmployeeId: string,
+  ) {
+    return await this.projectService.projectsPerEmployee(assignedEmployeeId);
+  }
+
+  @Get('department/:departmentId')
+  @AllowAnonymous()
+  async projectsPerDepartment(@Param('departmentId') departmentId: string) {
+    return await this.projectService.projectsPerDepartment(departmentId);
+  }
 }

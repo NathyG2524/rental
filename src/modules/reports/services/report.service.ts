@@ -492,7 +492,11 @@ export class ReportService {
         });
       }
     } else if (type == 'weekly') {
-      const reportReceivable = this.groupByTimePeriodsReceivable(receivable, from, to);
+      const reportReceivable = this.groupByTimePeriodsReceivable(
+        receivable,
+        from,
+        to,
+      );
 
       for (const month in reportReceivable.weeks) {
         revenueByMonth.push({
@@ -501,7 +505,11 @@ export class ReportService {
         });
       }
     } else if (type == 'daily') {
-      const reportReceivable = this.groupByTimePeriodsReceivable(receivable, from, to);
+      const reportReceivable = this.groupByTimePeriodsReceivable(
+        receivable,
+        from,
+        to,
+      );
       for (const month in reportReceivable.days) {
         revenueByMonth.push({
           month,
@@ -605,15 +613,17 @@ export class ReportService {
     const { from, to } = this.getDates(type);
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
-    const project = await manager.getRepository(Project).find(
+    const project = await manager
+      .getRepository(Project)
+      .find
       // {
       // where: {
       //   projectTasks:{
       //     d
       //   }
       // }
-    // }
-  );
+      // }
+      ();
     const projectByMonth = [];
 
     if (type == 'annually') {
@@ -645,7 +655,11 @@ export class ReportService {
 
     return projectByMonth;
   }
-  async employeeProjectReport(type: string, status: string, assignedEmployeeId: string) {
+  async employeeProjectReport(
+    type: string,
+    status: string,
+    assignedEmployeeId: string,
+  ) {
     const { from, to } = this.getDates(type);
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
 
@@ -658,15 +672,19 @@ export class ReportService {
     //   }
     // });
 
-    const project = await manager.getRepository(Project)
-    .createQueryBuilder('project')
-    .leftJoinAndSelect('project.projectTasks', 'tasks')
-    .groupBy('project.id, tasks.createdAt, tasks.updatedAt, tasks.id') // Group by the parent entity
-    .having('COUNT(*) = SUM(CASE WHEN tasks.status = :status AND tasks.assignedEmployeeId = :assignedEmployeeId THEN 1 ELSE 0 END)', {
-      assignedEmployeeId,
-            status
-    })
-    .getMany();
+    const project = await manager
+      .getRepository(Project)
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.projectTasks', 'tasks')
+      .groupBy('project.id, tasks.createdAt, tasks.updatedAt, tasks.id') // Group by the parent entity
+      .having(
+        'COUNT(*) = SUM(CASE WHEN tasks.status = :status AND tasks.assignedEmployeeId = :assignedEmployeeId THEN 1 ELSE 0 END)',
+        {
+          assignedEmployeeId,
+          status,
+        },
+      )
+      .getMany();
     const projectByMonth = [];
 
     if (type == 'annually') {
@@ -1043,7 +1061,11 @@ export class ReportService {
     return months;
   }
 
-  private groupByTimePeriodsReceivable(data: any, startDate: Date, endDate: Date) {
+  private groupByTimePeriodsReceivable(
+    data: any,
+    startDate: Date,
+    endDate: Date,
+  ) {
     // Convert start and end dates to Date objects
     const start = new Date(startDate);
     const end = new Date(endDate);

@@ -36,35 +36,35 @@ export class ProjectTaskService extends ExtraCrudService<ProjectTask> {
     ]);
   }
 
-  async taskPerEmployee(status: any, assignedEmployeeId: string ) {
+  async taskPerEmployee(status: any, assignedEmployeeId: string) {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
     return await manager.getRepository(ProjectTask).count({
       where: {
         status,
         assignedEmployeeId,
-      }
-    })
+      },
+    });
   }
-  
-  async projectPerEmployee(status: any, assignedEmployeeId: string ) {
+
+  async projectPerEmployee(status: any, assignedEmployeeId: string) {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
     return await manager.getRepository(Project).count({
       where: {
-        projectTasks:{
+        projectTasks: {
           status,
           assignedEmployeeId,
-        }
-      }
-    })
+        },
+      },
+    });
   }
-  async totalProjectPerEmployee( assignedEmployeeId: string ) {
+  async totalProjectPerEmployee(assignedEmployeeId: string) {
     const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
     return await manager.getRepository(Project).count({
       where: {
-        projectTasks:{
+        projectTasks: {
           assignedEmployeeId,
-        }
-      }
-    })
+        },
+      },
+    });
   }
 }

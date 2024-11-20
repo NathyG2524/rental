@@ -101,7 +101,11 @@ export class ReportController {
     @Param('status') status: string,
     @Param('employeeId') employeeId: string,
   ) {
-    return await this.reportService.employeeProjectReport(type, status, employeeId);
+    return await this.reportService.employeeProjectReport(
+      type,
+      status,
+      employeeId,
+    );
   }
 
   @Get('employee/:employeeId')

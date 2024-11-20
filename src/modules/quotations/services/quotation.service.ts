@@ -103,7 +103,10 @@ export class QuotationService extends EntityCrudService<Quotation> {
 
   async updateStatusToCheck(id: string, user: any) {
     let item;
-    if(user.permissions.includes('ALL') || user.permissions.includes('Admin')){
+    if (
+      user.permissions.includes('ALL') ||
+      user.permissions.includes('Admin')
+    ) {
       item = await this.repositoryQuotation.findOneBy({
         id,
       });
@@ -113,7 +116,6 @@ export class QuotationService extends EntityCrudService<Quotation> {
         quotationCheckedById: user.id,
       });
     }
-    
 
     if (!item) {
       throw new BadRequestException('quotation_not_found');

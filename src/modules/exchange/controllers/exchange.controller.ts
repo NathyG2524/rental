@@ -13,7 +13,9 @@ const options: EntityCrudOptions = {
 @ApiBearerAuth()
 @Controller('exchange')
 @ApiTags('Exchanges')
-export class ExchangeController extends EntityCrudController<Exchange>(options) {
+export class ExchangeController extends EntityCrudController<Exchange>(
+  options,
+) {
   constructor(private readonly exchangeService: ExchangeService) {
     super(exchangeService);
   }
