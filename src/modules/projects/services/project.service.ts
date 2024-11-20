@@ -74,7 +74,11 @@ export class ProjectService extends ExtraCrudService<Project> {
       query,
     )
       .leftJoin('projects.projectTasks', 'tasks')
-      .groupBy('projects.id, projects.createdAt, projects.updatedAt') // Group by the parent entity
+      .leftJoinAndSelect('projects.client', 'client')
+      .leftJoinAndSelect('projects.quotation', 'quotation')
+      .groupBy(
+        'projects.id, projects.createdAt, projects.updatedAt, client.id, client.createdAt, client.updatedAt, quotation.id, quotation.createdAt, quotation.updatedAt',
+      ) // Group by the parent entity
       .having(
         'COUNT(*) = SUM(CASE WHEN tasks.assignedEmployeeId = :assignedEmployeeId AND tasks.status = :status THEN 1 ELSE 0 END) ' +
           'AND SUM(CASE WHEN tasks.status = :status AND tasks.assignedEmployeeId = :assignedEmployeeId THEN 1 ELSE 0 END) > 0',
@@ -118,9 +122,13 @@ export class ProjectService extends ExtraCrudService<Project> {
       this.repositoryProject,
       query,
     )
-      .leftJoinAndSelect('project.projectTasks', 'tasks')
+      .leftJoinAndSelect('projects.projectTasks', 'tasks')
       .leftJoinAndSelect('tasks.departmentTeam', 'departmentTeam')
-      .groupBy('project.id') // Group by the parent entity
+      .leftJoinAndSelect('projects.client', 'client')
+      .leftJoinAndSelect('projects.quotation', 'quotation')
+      .groupBy(
+        'projects.id, tasks.createdAt, tasks.updatedAt, tasks.id, departmentTeam.createdAt, departmentTeam.updatedAt, departmentTeam.id,  client.id, client.createdAt, client.updatedAt, quotation.id, quotation.createdAt, quotation.updatedAt',
+      ) // Group by the parent entity
       .having(
         'COUNT(*) = SUM(CASE WHEN departmentTeam.departmentId = :departmentId AND tasks.status = :status THEN 1 ELSE 0 END) ' +
           'AND SUM(CASE WHEN tasks.status = :status AND departmentTeam.departmentId = :departmentId THEN 1 ELSE 0 END) > 0',

@@ -53,6 +53,7 @@ export class ProjectController extends ExtraCrudController<Project>(options) {
   }
 
   @Get('department/:departmentId')
+  @AllowAnonymous()
   async projectsPerDepartment(
     @Param('departmentId') departmentId: string,
     @Query('q') q: string,
