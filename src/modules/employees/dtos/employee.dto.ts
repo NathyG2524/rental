@@ -15,6 +15,10 @@ export class CreateEmployeeDto {
 
   @ApiProperty()
   @IsEmail()
+  personalEmail: string;
+
+  @ApiProperty()
+  @IsEmail()
   phone: string;
 
   @ApiProperty()
