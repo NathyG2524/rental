@@ -33,6 +33,9 @@ export class Employee extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
+  @Column({ default: 'test@251Communication.com' })
+  personalEmail: string;
+
   @Column({ nullable: true })
   phone: string;
 
