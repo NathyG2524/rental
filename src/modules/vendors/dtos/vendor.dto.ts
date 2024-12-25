@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsObject, IsString } from 'class-validator';
+import { IsObject, IsOptional, IsString } from 'class-validator';
 
 export class CreateVendorDto {
   @ApiProperty()
@@ -21,6 +21,11 @@ export class CreateVendorDto {
   @ApiProperty()
   @IsString()
   createdById: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  category: string;
 }
 
 export class UpdateVendorAdditionalInfoDto {

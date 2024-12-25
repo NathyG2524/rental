@@ -30,6 +30,9 @@ export class Vendor extends BaseEntity {
   @Column()
   phone: string;
 
+  @Column({ nullable: true })
+  category: string;
+
   @Column({ type: 'jsonb', nullable: true })
   additionalInfo: any;
 
