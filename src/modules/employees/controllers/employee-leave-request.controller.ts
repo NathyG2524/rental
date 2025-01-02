@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Req,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -66,5 +67,18 @@ export class EmployeeLeaveRequestController extends EntityCrudController<Employe
     });
 
     return res.send(result.buffer);
+  }
+
+  @Get('remaining-days/:leaveTypeId')
+  @AllowAnonymous()
+  async remainingDays(
+    @Param('leaveTypeId') leaveTypeId: string,
+    @Req() req: any,
+  ) {
+    const result = await this.lEaLeaveTypeService.remainingDays(
+      req.user.id,
+      leaveTypeId,
+    );
+    return result;
   }
 }

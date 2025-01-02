@@ -30,6 +30,9 @@ export class EmployeeLeaveRequest extends BaseEntity {
   @Column({ nullable: true })
   reason: string;
 
+  @Column({ nullable: true })
+  numberOfDays: number;
+
   @Column({ default: 'REQUESTED' })
   status: string;
 

@@ -29,6 +29,11 @@ export class CreateEmployeeLeaveRequestDto {
   reason: string;
 
   @ApiProperty()
+  @IsString()
+  @IsOptional()
+  numberOfDays: number;
+
+  @ApiProperty()
   @IsOptional()
   @IsBooleanString()
   withNote: boolean;
