@@ -1,8 +1,8 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EntityCrudService } from 'src/shared/service';
-import { EmployeeLeaveRequest } from '@entities';
+import { EmployeeLeaveAllocation, EmployeeLeaveRequest } from '@entities';
 import {
   CreateEmployeeLeaveRequestDto,
   UpdateEmployeeLeaveRequestStatusDto,
@@ -25,6 +25,8 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
   constructor(
     @InjectRepository(EmployeeLeaveRequest)
     private readonly repositoryLeaveType: Repository<EmployeeLeaveRequest>,
+    @InjectRepository(EmployeeLeaveAllocation)
+    private readonly repositoryEmployeeLeaveAllocation: Repository<EmployeeLeaveAllocation>,
   ) {
     super(repositoryLeaveType);
     this.sftp = new SftpClient();
@@ -36,6 +38,12 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
         'Effective From cannot be greater than Effective To',
       );
     }
+
+    itemData.numberOfDays =
+      Math.ceil(
+        itemData.effectiveTo.getTime() - itemData.effectiveFrom.getTime(),
+      ) /
+      (1000 * 60 * 60 * 24);
 
     const item = this.repositoryLeaveType.create(itemData);
     await this.repositoryLeaveType.insert(item);
@@ -122,5 +130,32 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
         'Content-Length': fileInfo.size,
       },
     };
+  }
+
+  async remainingDays(employeeId: string, leaveTypeId: string) {
+    const employeeLeaveRequest = await this.repositoryLeaveType.find({
+      where: { employeeId, leaveTypeId, status: 'APPROVED' },
+    });
+
+    const leaveRequest = await this.repositoryLeaveType.findOneBy({
+      employeeId,
+      leaveTypeId,
+    });
+
+    if (!leaveRequest) {
+      throw new BadRequestException('leave_request_not_found');
+    }
+
+    const leaveAllocation =
+      await this.repositoryEmployeeLeaveAllocation.findOneBy({
+        employeeId,
+        leaveTypeId,
+      });
+
+    const totalLeaveDays = employeeLeaveRequest.reduce((acc, curr) => {
+      return acc + curr.numberOfDays;
+    }, 0);
+
+    return leaveAllocation.allowedDate - totalLeaveDays;
   }
 }
