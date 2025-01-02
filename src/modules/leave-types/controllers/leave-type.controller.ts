@@ -16,7 +16,7 @@ const options: EntityCrudOptions = {
 export class LeaveTypeController extends EntityCrudController<LeaveType>(
   options,
 ) {
-  constructor(private readonly lEaLeaveTypeService: LeaveTypeService) {
-    super(lEaLeaveTypeService);
+  constructor(private readonly leaveTypeService: LeaveTypeService) {
+    super(leaveTypeService);
   }
 }
