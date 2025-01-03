@@ -1,8 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { EntityCrudService } from 'src/shared/service';
-import { EmployeeLeaveAllocation, EmployeeLeaveRequest } from '@entities';
+import {
+  EmployeeLeaveAllocation,
+  EmployeeLeaveRequest,
+  LeaveType,
+} from '@entities';
 import {
   CreateEmployeeLeaveRequestDto,
   UpdateEmployeeLeaveRequestStatusDto,
@@ -10,6 +14,8 @@ import {
 import * as SftpClient from 'ssh2-sftp-client';
 import { extname } from 'path';
 import { randomUUID } from 'crypto';
+import { REQUEST } from '@nestjs/core';
+import { ENTITY_MANAGER_KEY } from 'src/shared/interceptors';
 
 @Injectable()
 export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeaveRequest> {
@@ -24,11 +30,12 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
 
   constructor(
     @InjectRepository(EmployeeLeaveRequest)
-    private readonly repositoryLeaveType: Repository<EmployeeLeaveRequest>,
-    @InjectRepository(EmployeeLeaveAllocation)
-    private readonly repositoryEmployeeLeaveAllocation: Repository<EmployeeLeaveAllocation>,
+    private readonly repositoryEmployeeLeaveType: Repository<EmployeeLeaveRequest>,
+
+    @Inject(REQUEST)
+    private readonly request: Request,
   ) {
-    super(repositoryLeaveType);
+    super(repositoryEmployeeLeaveType);
     this.sftp = new SftpClient();
   }
 
@@ -45,14 +52,14 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
       ) /
       (1000 * 60 * 60 * 24);
 
-    const item = this.repositoryLeaveType.create(itemData);
-    await this.repositoryLeaveType.insert(item);
+    const item = this.repositoryEmployeeLeaveType.create(itemData);
+    await this.repositoryEmployeeLeaveType.insert(item);
     return item;
   }
 
   async updateStatus(itemData: UpdateEmployeeLeaveRequestStatusDto, user: any) {
     const item = await this.findOneOrFail(itemData.id);
-    await this.repositoryLeaveType.update(item.id, {
+    await this.repositoryEmployeeLeaveType.update(item.id, {
       status: itemData.status,
       reason: itemData.reason,
       approvedById: user.id,
@@ -66,20 +73,20 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
   }
 
   async uploadDocument(id: string, file: Express.Multer.File) {
-    const employee = await this.repositoryLeaveType.findOneBy({ id });
+    const employee = await this.repositoryEmployeeLeaveType.findOneBy({ id });
     if (!employee) {
       throw new BadRequestException('employee_not_found');
     }
     const fileResult = await this.uploadFile(file);
 
-    await this.repositoryLeaveType.update(id, {
+    await this.repositoryEmployeeLeaveType.update(id, {
       document: fileResult as any,
     });
 
     return fileResult;
   }
   async downloadDocument(id: string) {
-    const employee = await this.repositoryLeaveType.findOneBy({ id });
+    const employee = await this.repositoryEmployeeLeaveType.findOneBy({ id });
     if (!employee) {
       throw new BadRequestException('employee_not_found');
     } else if (!employee.document) {
@@ -133,29 +140,19 @@ export class EmployeeLeaveRequestService extends EntityCrudService<EmployeeLeave
   }
 
   async remainingDays(employeeId: string, leaveTypeId: string) {
-    const employeeLeaveRequest = await this.repositoryLeaveType.find({
+    const manager: EntityManager = this.request[ENTITY_MANAGER_KEY];
+    const employeeLeaveRequest = await this.repositoryEmployeeLeaveType.find({
       where: { employeeId, leaveTypeId, status: 'APPROVED' },
     });
 
-    const leaveRequest = await this.repositoryLeaveType.findOneBy({
-      employeeId,
-      leaveTypeId,
+    const leaveAllocation = await manager.getRepository(LeaveType).findOneBy({
+      id: leaveTypeId,
     });
-
-    if (!leaveRequest) {
-      throw new BadRequestException('leave_request_not_found');
-    }
-
-    const leaveAllocation =
-      await this.repositoryEmployeeLeaveAllocation.findOneBy({
-        employeeId,
-        leaveTypeId,
-      });
 
     const totalLeaveDays = employeeLeaveRequest.reduce((acc, curr) => {
       return acc + curr.numberOfDays;
     }, 0);
 
-    return leaveAllocation.allowedDate - totalLeaveDays;
+    return leaveAllocation.maxAllowedDate - totalLeaveDays;
   }
 }
