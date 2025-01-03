@@ -69,14 +69,14 @@ export class EmployeeLeaveRequestController extends EntityCrudController<Employe
     return res.send(result.buffer);
   }
 
-  @Get('remaining-days/:leaveTypeId')
+  @Get('remaining-days/:employeeId/:leaveTypeId')
   @AllowAnonymous()
   async remainingDays(
     @Param('leaveTypeId') leaveTypeId: string,
-    @Req() req: any,
+    @Param('employeeId') employeeId: string,
   ) {
     const result = await this.lEaLeaveTypeService.remainingDays(
-      req.user.id,
+      employeeId,
       leaveTypeId,
     );
     return result;
