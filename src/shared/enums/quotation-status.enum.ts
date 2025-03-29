@@ -1,7 +1,0 @@
-export enum QuotationStatusEnum {
-  DRAFT = 'DRAFT',
-  REQUESTED = 'REQUESTED',
-  CHECKED = 'CHECKED',
-  APPROVED = 'APPROVED',
-  CONVERTED = 'CONVERTED',
-}
